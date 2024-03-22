@@ -4,4 +4,7 @@
     <string name="login_button">Login</string>
     <string name="password_hint">Password</string>
     <string name="email_hint">Email</string>
+    <string name="name_hint">Username</string>
+    <string name="confirm_password_hint">Confirm Password</string>
+    <string name="already_have_account">Already have an account?</string>
 </resources>
