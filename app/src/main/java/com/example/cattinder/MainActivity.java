@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.widget.ImageButton;
 
 import com.example.cattinder.Controllers.TinderButtonClickListener;
+import com.example.cattinder.ViewModels.CardViewModel;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,5 +23,8 @@ public class MainActivity extends AppCompatActivity {
         dislikeButton.setOnClickListener(buttonClickListener);
         likeButton.setOnClickListener(buttonClickListener);
         mapButton.setOnClickListener(buttonClickListener);
+
+        CardViewModel cardViewModel = new CardViewModel(this);
+        cardViewModel.newCat();
     }
 }

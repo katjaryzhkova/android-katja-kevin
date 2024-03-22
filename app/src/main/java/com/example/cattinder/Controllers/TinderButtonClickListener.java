@@ -12,7 +12,6 @@ public class TinderButtonClickListener implements View.OnClickListener {
     @Override
     public void onClick(View button) {
         CardViewModel cardViewModel = new CardViewModel(button.getContext());
-        cardViewModel.newCat();
         if (button.getId() == R.id.dislike_button || button.getId() == R.id.like_button) {
             cardViewModel.newCat();
         } else if (button.getId() == R.id.map_button) {
