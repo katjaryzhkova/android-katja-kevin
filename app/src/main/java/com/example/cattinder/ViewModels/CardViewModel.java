@@ -50,58 +50,53 @@ public class CardViewModel {
     private void loadCatImage(URL url, ProgressBar progressBar) {
         ImageView imageView = ((Activity) context).findViewById(R.id.card_image);
 
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url.toString(), null,
-                response -> {
-                    try {
-                        JSONObject jsonObject = response.getJSONObject(0);
-                        String imageUrl = jsonObject.getString("url");
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url.toString(), null, response -> {
+            try {
+                JSONObject jsonObject = response.getJSONObject(0);
+                String imageUrl = jsonObject.getString("url");
 
-                        Glide.with(context)
-                                .load(imageUrl)
-                                .listener(new RequestListener<Drawable>() {
-                                    @Override
-                                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                        progressBar.setVisibility(View.GONE);
-                                        return false;
-                                    }
-
-                                    @Override
-                                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                        progressBar.setVisibility(View.GONE);
-                                        return false;
-                                    }
-
-                                })
-                                .into(imageView);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                Glide.with(context).load(imageUrl).listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        progressBar.setVisibility(View.GONE);
+                        return false;
                     }
-                }, Throwable::printStackTrace);
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        progressBar.setVisibility(View.GONE);
+                        return false;
+                    }
+
+                }).into(imageView);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }, Throwable::printStackTrace);
 
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         requestQueue.add(jsonArrayRequest);
     }
 
     private void loadUserData(URL url, ProgressBar progressBar) {
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url.toString(), null,
-                response -> {
-                    try {
-                        JSONObject results = response.getJSONArray("results").getJSONObject(0); // Only returns one user, so we can just get the first one
-                        JSONObject name = results.getJSONObject("name");
-                        JSONObject location = results.getJSONObject("location");
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url.toString(), null, response -> {
+            try {
+                JSONObject results = response.getJSONArray("results").getJSONObject(0); // Only returns one user, so we can just get the first one
+                JSONObject name = results.getJSONObject("name");
+                JSONObject location = results.getJSONObject("location");
 
-                        String firstName = name.getString("first");
-                        String lastName = name.getString("last");
-                        String city = location.getString("city");
+                String firstName = name.getString("first");
+                String lastName = name.getString("last");
+                String city = location.getString("city");
 
-                        TextView textView = ((Activity) context).findViewById(R.id.cat_info);
-                        textView.setText(firstName + " " + lastName + " from " + city);
+                TextView textView = ((Activity) context).findViewById(R.id.cat_info);
+                textView.setText(firstName + " " + lastName + " from " + city);
 
-                        progressBar.setVisibility(View.GONE);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }, Throwable::printStackTrace);
+                progressBar.setVisibility(View.GONE);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }, Throwable::printStackTrace);
 
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         requestQueue.add(jsonObjectRequest);
