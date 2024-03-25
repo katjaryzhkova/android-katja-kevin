@@ -41,7 +41,7 @@
         android:textSize="16sp" />
 
     <Button
-        android:id="@+id/register_button"
+        android:id="@+id/navigate_to_register_button"
         android:layout_width="116dp"
         android:layout_height="49dp"
         android:layout_below="@+id/login_password_input_field"
