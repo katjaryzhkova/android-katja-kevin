@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "743761740505",
-    "project_id": "android-ecd97",
-    "storage_bucket": "android-ecd97.appspot.com"
+    "project_number": "319266319480",
+    "project_id": "android-3e434",
+    "storage_bucket": "android-3e434.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:743761740505:android:07e96a306e4a411825b4c8",
+        "mobilesdk_app_id": "1:319266319480:android:670d29ac709db1f86c118d",
         "android_client_info": {
           "package_name": "com.example.cattinder"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCIPuldj1ThwzGuq79pvKJlX8NygwAsjSw"
+          "current_key": "AIzaSyAJRsZJHaU8eBupL46XPU2NuCUNedAWkiA"
         }
       ],
       "services": {
