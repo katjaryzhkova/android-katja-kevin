@@ -9,4 +9,5 @@
     <string name="already_have_account">Already have an account?</string>
     <string name="back">Back</string>
     <string name="calculate_distance">calculate distance</string>
+    <string name="location_error">error</string>
 </resources>

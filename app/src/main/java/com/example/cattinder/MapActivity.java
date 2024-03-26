@@ -1,17 +1,23 @@
 package com.example.cattinder;
 
-import android.content.Context;
+import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -49,12 +55,49 @@ public class MapActivity extends AppCompatActivity {
 
         Button calculateDistanceButton = findViewById(R.id.calculate_location_button);
         calculateDistanceButton.setOnClickListener(v -> {
-            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
-            } else {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 calculateDistance();
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
             }
         });
+    }
+
+    private void calculateDistance() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
+        } else {
+            performLocationOperation();
+        }
+    }
+
+    private void performLocationOperation() {
+        FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            ProgressBar progressBar = findViewById(R.id.progress_bar);
+            TextView distanceText = findViewById(R.id.distance_text_view);
+            progressBar.setVisibility(View.VISIBLE);
+            distanceText.setVisibility(View.GONE);
+            fusedLocationClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, null)
+                    .addOnSuccessListener(location -> {
+                        progressBar.setVisibility(View.GONE);
+                        double latitude = getIntent().getDoubleExtra("latitude", 0);
+                        double longitude = getIntent().getDoubleExtra("longitude", 0);
+
+                        Location catLocation = new Location(LocationManager.GPS_PROVIDER);
+                        catLocation.setLatitude(latitude);
+                        catLocation.setLongitude(longitude);
+
+                        Location userLocation = new Location(LocationManager.GPS_PROVIDER);
+                        userLocation.setLatitude(location.getLatitude());
+                        userLocation.setLongitude(location.getLongitude());
+
+                        float distance = userLocation.distanceTo(catLocation) / 1000; // Convert to kilometers
+                        distanceText.setVisibility(View.VISIBLE);
+                        distanceText.setText(String.format(Locale.getDefault(), "%.2f km", distance));
+                    });
+        }
     }
 
     @Override
@@ -62,33 +105,9 @@ public class MapActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_LOCATION_PERMISSION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                calculateDistance();
+                performLocationOperation();
             } else {
                 finish();
-            }
-        }
-    }
-
-    private void calculateDistance() {
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (locationManager != null) {
-            try {
-                Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                if (location != null) {
-                    double userLatitude = location.getLatitude();
-                    double userLongitude = location.getLongitude();
-
-                    double catLatitude = getIntent().getDoubleExtra("latitude", 0);
-                    double catLongitude = getIntent().getDoubleExtra("longitude", 0);
-
-                    float[] results = new float[1];
-                    Location.distanceBetween(userLatitude, userLongitude, catLatitude, catLongitude, results);
-
-                    TextView distanceTextView = findViewById(R.id.distance_text_view);
-                    distanceTextView.setText(String.format(Locale.getDefault(), "Distance: %.2f km", results[0] / 1000));
-                }
-            } catch (SecurityException e) {
-                e.printStackTrace();
             }
         }
     }
