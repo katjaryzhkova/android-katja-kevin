@@ -91,7 +91,6 @@ public class CardViewModel {
 
                 String firstName = name.getString("first");
                 String lastName = name.getString("last");
-                String city = location.getString("city");
 
                 double latitude = location.getJSONObject("coordinates").getDouble("latitude");
                 double longitude = location.getJSONObject("coordinates").getDouble("longitude");
@@ -99,7 +98,7 @@ public class CardViewModel {
                 catLocation = new LatLng(latitude, longitude);
 
                 TextView textView = ((Activity) context).findViewById(R.id.cat_info);
-                textView.setText(firstName + " " + lastName + " from " + city);
+                textView.setText(firstName + " " + lastName);
 
                 progressBar.setVisibility(View.GONE);
             } catch (JSONException e) {
