@@ -2,6 +2,7 @@ package com.example.cattinder.ViewModels;
 
 import android.app.Activity;
 import android.content.Context;
+
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.ImageView;
@@ -22,6 +23,8 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.cattinder.R;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,6 +33,7 @@ import java.net.URL;
 
 public class CardViewModel {
     private final Context context;
+    private LatLng catLocation;
 
     public CardViewModel(Context context) {
         this.context = context;
@@ -89,6 +93,11 @@ public class CardViewModel {
                 String lastName = name.getString("last");
                 String city = location.getString("city");
 
+                double latitude = location.getJSONObject("coordinates").getDouble("latitude");
+                double longitude = location.getJSONObject("coordinates").getDouble("longitude");
+
+                catLocation = new LatLng(latitude, longitude);
+
                 TextView textView = ((Activity) context).findViewById(R.id.cat_info);
                 textView.setText(firstName + " " + lastName + " from " + city);
 
@@ -100,5 +109,9 @@ public class CardViewModel {
 
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         requestQueue.add(jsonObjectRequest);
+    }
+
+    public LatLng getCatLocation() {
+        return catLocation;
     }
 }

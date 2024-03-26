@@ -1,12 +1,15 @@
 package com.example.cattinder.Controllers;
 
+import android.content.Intent;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 
+import com.example.cattinder.MapActivity;
 import com.example.cattinder.R;
 import com.example.cattinder.ViewModels.CardViewModel;
+import com.google.android.gms.maps.model.LatLng;
 
 import kotlin.NotImplementedError;
 
@@ -53,7 +56,11 @@ public class MainController implements View.OnClickListener {
         if (button.getId() == R.id.dislike_button || button.getId() == R.id.like_button) {
             cardViewModel.newCat();
         } else if (button.getId() == R.id.map_button) {
-            throw new NotImplementedError("Map feature not implemented yet");
+            LatLng catLocation = cardViewModel.getCatLocation();
+            Intent intent = new Intent(button.getContext(), MapActivity.class);
+            intent.putExtra("latitude", catLocation.latitude);
+            intent.putExtra("longitude", catLocation.longitude);
+            button.getContext().startActivity(intent);
         }
     }
 }
