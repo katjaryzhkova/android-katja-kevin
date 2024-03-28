@@ -52,8 +52,12 @@ public class CardViewModel {
     }
 
     private void loadCatImage(URL url, ProgressBar progressBar) {
-        ImageView imageView = ((Activity) context).findViewById(R.id.card_image);
+        Activity activity = (Activity) context;
+        if (activity.isDestroyed()) {
+            return;
+        }
 
+        ImageView imageView = activity.findViewById(R.id.card_image);
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url.toString(), null, response -> {
             try {
                 JSONObject jsonObject = response.getJSONObject(0);

@@ -1,12 +1,15 @@
 package com.example.cattinder;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.cardview.widget.CardView;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -38,11 +41,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setUpDrawer(
-        TextView nameText,
-        LinearLayout profile,
-        CardView homeLink,
-        CardView profileLink,
-        ImageView profilePicture
+            TextView nameText,
+            LinearLayout profile,
+            CardView homeLink,
+            CardView profileLink,
+            CardView settingsLink,
+            ImageView profilePicture
     ) {
         if (authViewModel == null) {
             authViewModel = new AuthViewModel(this);
@@ -71,6 +75,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        settingsLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, PreferencesActivity.class));
+            }
+        });
+
         setImageFromUri(profilePicture, authViewModel.getPhoto());
     }
 
@@ -89,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
         if (cardViewModel == null) {
             cardViewModel = new CardViewModel(this);
 
-            cardViewModel.newCat(); // Initial cat
+//            cardViewModel.newCat(); // Initial cat
         }
 
         if (authViewModel == null) {
@@ -100,24 +111,27 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout profile = findViewById(R.id.user_profile);
         CardView homeLink = findViewById(R.id.home_navigate_home);
         CardView profileLink = findViewById(R.id.home_navigate_profile);
+        CardView settingsLink = findViewById(R.id.home_navigate_preferences);
         ImageView profilePicture = findViewById(R.id.home_profile_picture);
 
+
         MainController mainController = new MainController(
-            cardViewModel,
-            dislikeButton,
-            likeButton,
-            mapButton,
-            cardView,
-            openDrawerButton,
-            drawerLayout
+                cardViewModel,
+                dislikeButton,
+                likeButton,
+                mapButton,
+                cardView,
+                openDrawerButton,
+                drawerLayout
         );
 
         setUpDrawer(
-            nameText,
-            profile,
-            homeLink,
-            profileLink,
-            profilePicture
+                nameText,
+                profile,
+                homeLink,
+                profileLink,
+                settingsLink,
+                profilePicture
         );
     }
 
@@ -136,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout profile = findViewById(R.id.profile_user_profile);
         CardView homeLink = findViewById(R.id.profile_navigate_home);
         CardView profileLink = findViewById(R.id.profile_navigate_profile);
+        CardView settingsLink = findViewById(R.id.profile_navigate_preferences);
         ImageView navProfilePicture = findViewById(R.id.profile_profile_picture);
 
         if (authViewModel == null) {
@@ -143,22 +158,23 @@ public class MainActivity extends AppCompatActivity {
         }
 
         new ProfileController(
-            logoutButton,
-            deleteAccountButton,
-            name,
-            authViewModel,
-            profilePicture,
-            openDrawerButton,
-            drawerLayout,
-            this
+                logoutButton,
+                deleteAccountButton,
+                name,
+                authViewModel,
+                profilePicture,
+                openDrawerButton,
+                drawerLayout,
+                this
         );
 
         setUpDrawer(
-            nameText,
-            profile,
-            homeLink,
-            profileLink,
-            navProfilePicture
+                nameText,
+                profile,
+                homeLink,
+                profileLink,
+                settingsLink,
+                navProfilePicture
         );
     }
 
@@ -175,12 +191,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         LoginController loginController = new LoginController(
-            this,
-            authViewModel,
-            loginButton,
-            navigateToRegisterViewButton,
-            emailInput,
-            passwordInput
+                this,
+                authViewModel,
+                loginButton,
+                navigateToRegisterViewButton,
+                emailInput,
+                passwordInput
         );
     }
 
@@ -199,14 +215,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
         RegisterController registerController = new RegisterController(
-            this,
-            authViewModel,
-            registerButton,
-            navigateToSignInViewButton,
-            fullnameInput,
-            emailInput,
-            passwordInput,
-            confirmPasswordInput
+                this,
+                authViewModel,
+                registerButton,
+                navigateToSignInViewButton,
+                fullnameInput,
+                emailInput,
+                passwordInput,
+                confirmPasswordInput
         );
     }
 
@@ -225,14 +241,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
         UpdateProfileController updateProfileController = new UpdateProfileController(
-            this,
-            authViewModel,
-            updateButton,
-            navigateBackButton,
-            fullnameInput,
-            emailInput,
-            passwordInput,
-            newPasswordInput
+                this,
+                authViewModel,
+                updateButton,
+                navigateBackButton,
+                fullnameInput,
+                emailInput,
+                passwordInput,
+                newPasswordInput
         );
     }
 
@@ -246,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             authViewModel.updatePhoto(data.getData());
         }
     }
@@ -255,6 +271,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FirebaseAuth auth = FirebaseAuth.getInstance();
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean darkMode = preferences.getBoolean("dark_mode", false);
+        AppCompatDelegate.setDefaultNightMode(darkMode ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
 
         if (auth.getCurrentUser() != null) {
             navigateHome();

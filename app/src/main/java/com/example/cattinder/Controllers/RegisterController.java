@@ -12,13 +12,13 @@ import com.example.cattinder.R;
 import com.example.cattinder.ViewModels.AuthViewModel;
 
 public class RegisterController implements View.OnClickListener {
-    private MainActivity main;
-    private AuthViewModel authViewModel;
+    private final MainActivity main;
+    private final AuthViewModel authViewModel;
 
-    private EditText fullnameInput;
-    private EditText emailInput;
-    private EditText passwordInput;
-    private EditText confirmPasswordInput;
+    private final EditText fullnameInput;
+    private final EditText emailInput;
+    private final EditText passwordInput;
+    private final EditText confirmPasswordInput;
 
     public RegisterController(MainActivity main, AuthViewModel authViewModel, Button registerButton, Button navigateToSignInViewButton, EditText fullnameInput, EditText emailInput, EditText passwordInput, EditText confirmPasswordInput) {
         registerButton.setOnClickListener(this);

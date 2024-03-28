@@ -1,5 +1,7 @@
 package com.example.cattinder.Controllers;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
 import android.content.Intent;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -12,6 +14,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.cattinder.MainActivity;
 import com.example.cattinder.MapActivity;
+import com.example.cattinder.PreferencesActivity;
 import com.example.cattinder.R;
 import com.example.cattinder.ViewModels.CardViewModel;
 import com.google.android.gms.maps.model.LatLng;

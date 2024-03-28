@@ -26,8 +26,8 @@ import java.util.UUID;
 import java.util.concurrent.Executor;
 
 public class AuthViewModel extends AppCompatActivity {
-    private FirebaseAuth auth;
-    private MainActivity main;
+    private final FirebaseAuth auth;
+    private final MainActivity main;
 
     public AuthViewModel(MainActivity main) {
         this.auth = FirebaseAuth.getInstance();

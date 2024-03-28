@@ -39,6 +39,7 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.13.0")
     implementation("com.google.firebase:firebase-auth:22.3.1")
     implementation("androidx.drawerlayout:drawerlayout:1.2.0")
+    implementation("androidx.preference:preference:1.2.1")
     implementation("androidx.navigation:navigation-fragment:2.7.7")
     implementation("androidx.navigation:navigation-ui:2.7.7")
     implementation("com.google.firebase:firebase-storage:20.3.0")
