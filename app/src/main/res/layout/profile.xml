@@ -4,9 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?attr/backgroundColor"
-    >
+    android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -113,9 +111,9 @@
                                     android:layout_height="32dp"
                                     android:background="#FF5E5E"
                                     android:src="@android:drawable/ic_menu_close_clear_cancel"
-                                    android:tint="#FF5E5E"
                                     android:tintMode="screen"
-                                    app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
+                                    app:srcCompat="@android:drawable/ic_menu_close_clear_cancel"
+                                    app:tint="#FF5E5E" />
                             </androidx.cardview.widget.CardView>
 
                             <TextView
@@ -153,9 +151,9 @@
                                     android:layout_height="32dp"
                                     android:background="#FF5E5E"
                                     android:src="@android:drawable/ic_menu_delete"
-                                    android:tint="#FF5E5E"
                                     android:tintMode="screen"
-                                    app:srcCompat="@android:drawable/ic_menu_delete" />
+                                    app:srcCompat="@android:drawable/ic_menu_delete"
+                                    app:tint="#FF5E5E" />
                             </androidx.cardview.widget.CardView>
 
                             <TextView
@@ -179,9 +177,9 @@
         android:layout_width="250dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:clickable="true"
         android:divider="@android:color/transparent"
-        android:dividerHeight="0dp"
-        android:clickable="true">
+        android:dividerHeight="0dp">
 
         <ImageView
             android:id="@+id/imageView_bg"
@@ -300,7 +298,7 @@
                     android:layout_marginTop="4dp"
                     android:layout_marginRight="16dp"
                     android:layout_marginBottom="4dp"
-                    app:cardBackgroundColor="#A6E3FF"
+                    app:cardBackgroundColor="#7E7D7D"
                     app:cardCornerRadius="8dp">
 
                     <LinearLayout
@@ -313,7 +311,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:padding="8dp"
-                            android:text="Profile" />
+                            android:text="Settings" />
                     </LinearLayout>
 
                 </androidx.cardview.widget.CardView>
