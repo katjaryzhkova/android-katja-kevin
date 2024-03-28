@@ -1,6 +1,9 @@
 package com.example.cattinder.Controllers;
 
+import static androidx.core.content.ContextCompat.getSystemService;
+
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -27,16 +30,14 @@ public class LoginController implements View.OnClickListener {
 
     @Override
     public void onClick(View button) {
+        getSystemService(main, InputMethodManager.class)
+            .hideSoftInputFromWindow(button.getWindowToken(), 0);
+
         if (button.getId() == R.id.login_button) {
-            try {
-                authViewModel.tryLogIn(
-                        emailInput.getText().toString(),
-                        passwordInput.getText().toString()
-                );
-            } catch(Exception e) {
-                System.out.print(e.toString());
-                // ...
-            }
+            authViewModel.tryLogIn(
+                emailInput.getText().toString(),
+                passwordInput.getText().toString()
+            );
         } else if (button.getId() == R.id.navigate_to_register_button) {
             main.navigateSignUp();
         }

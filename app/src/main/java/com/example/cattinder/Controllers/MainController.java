@@ -4,12 +4,18 @@ import android.content.Intent;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 
+import androidx.drawerlayout.widget.DrawerLayout;
+
+import com.example.cattinder.MainActivity;
 import com.example.cattinder.MapActivity;
 import com.example.cattinder.R;
 import com.example.cattinder.ViewModels.CardViewModel;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import kotlin.NotImplementedError;
 
@@ -19,12 +25,27 @@ public class MainController implements View.OnClickListener {
     private final CardViewModel cardViewModel;
     private final GestureDetector gestureDetector;
 
-    public MainController(CardViewModel cardViewModel, ImageButton dislikeButton, ImageButton likeButton, ImageButton mapButton, View cardView) {
+    public MainController(
+        CardViewModel cardViewModel,
+        ImageButton dislikeButton,
+        ImageButton likeButton,
+        ImageButton mapButton,
+        View cardView,
+        FloatingActionButton openDrawerButton,
+        DrawerLayout drawerLayout
+    ) {
         this.cardViewModel = cardViewModel;
 
         dislikeButton.setOnClickListener(this);
         likeButton.setOnClickListener(this);
         mapButton.setOnClickListener(this);
+
+        openDrawerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.open();
+            }
+        });
 
         gestureDetector = new GestureDetector(cardView.getContext(), new GestureDetector.SimpleOnGestureListener() {
             @Override
