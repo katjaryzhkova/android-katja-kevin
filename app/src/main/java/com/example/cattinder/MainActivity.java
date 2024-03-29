@@ -1,15 +1,20 @@
 package com.example.cattinder;
 
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.cardview.widget.CardView;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -20,7 +25,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -39,6 +43,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 // MainActivity.java
 public class MainActivity extends AppCompatActivity {
+    public static String CHANNEL_ID = "CAT_TINDER";
     private CardViewModel cardViewModel;
     private AuthViewModel authViewModel;
     private final int PICK_IMAGE_REQUEST = 71;
@@ -48,14 +53,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setUpDrawer(
-        TextView nameText,
-        LinearLayout profile,
-        CardView homeLink,
-        CardView profileLink,
-        CardView historyLink,
-        CardView settingsLink,
-        ImageView profilePicture,
-        CardView activeLink
+            TextView nameText,
+            LinearLayout profile,
+            CardView homeLink,
+            CardView profileLink,
+            CardView historyLink,
+            CardView settingsLink,
+            ImageView profilePicture,
+            CardView activeLink
     ) {
         if (authViewModel == null) {
             authViewModel = new AuthViewModel(this);
@@ -102,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
 
         ScrollView drawer = findViewById(R.id.scrollView);
 
-        if(AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
+        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
             drawer.setBackgroundColor(Color.BLACK);
 
             if (homeLink != activeLink) {
@@ -140,13 +145,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         new Handler(Looper.getMainLooper()).postDelayed(
-            new Runnable() {
-                @Override
-                public void run() {
-                    cardViewModel.newCat();
-                }
-            },
-            1000
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        cardViewModel.newCat();
+                    }
+                },
+                1000
         );
 
         if (authViewModel == null) {
@@ -162,25 +167,25 @@ public class MainActivity extends AppCompatActivity {
         ImageView profilePicture = findViewById(R.id.home_profile_picture);
 
         MainController mainController = new MainController(
-            cardViewModel,
-            dislikeButton,
-            likeButton,
-            mapButton,
-            cardView,
-            openDrawerButton,
-            drawerLayout,
-            authViewModel
+                cardViewModel,
+                dislikeButton,
+                likeButton,
+                mapButton,
+                cardView,
+                openDrawerButton,
+                drawerLayout,
+                authViewModel
         );
 
         setUpDrawer(
-            nameText,
-            profile,
-            homeLink,
-            profileLink,
-            historyLink,
-            settingsLink,
-            profilePicture,
-            homeLink
+                nameText,
+                profile,
+                homeLink,
+                profileLink,
+                historyLink,
+                settingsLink,
+                profilePicture,
+                homeLink
         );
     }
 
@@ -208,25 +213,25 @@ public class MainActivity extends AppCompatActivity {
         }
 
         new ProfileController(
-            logoutButton,
-            deleteAccountButton,
-            name,
-            authViewModel,
-            profilePicture,
-            openDrawerButton,
-            drawerLayout,
-            this
+                logoutButton,
+                deleteAccountButton,
+                name,
+                authViewModel,
+                profilePicture,
+                openDrawerButton,
+                drawerLayout,
+                this
         );
 
         setUpDrawer(
-            nameText,
-            profile,
-            homeLink,
-            profileLink,
-            historyLink,
-            settingsLink,
-            navProfilePicture,
-            profileLink
+                nameText,
+                profile,
+                homeLink,
+                profileLink,
+                historyLink,
+                settingsLink,
+                navProfilePicture,
+                profileLink
         );
     }
 
@@ -251,22 +256,22 @@ public class MainActivity extends AppCompatActivity {
         }
 
         new HistoryController(
-            openDrawerButton,
-            drawerLayout,
-            authViewModel,
-            recycler,
-            this
+                openDrawerButton,
+                drawerLayout,
+                authViewModel,
+                recycler,
+                this
         );
 
         setUpDrawer(
-            nameText,
-            profile,
-            homeLink,
-            profileLink,
-            historyLink,
-            settingsLink,
-            navProfilePicture,
-            historyLink
+                nameText,
+                profile,
+                homeLink,
+                profileLink,
+                historyLink,
+                settingsLink,
+                navProfilePicture,
+                historyLink
         );
     }
 
@@ -283,12 +288,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         LoginController loginController = new LoginController(
-            this,
-            authViewModel,
-            loginButton,
-            navigateToRegisterViewButton,
-            emailInput,
-            passwordInput
+                this,
+                authViewModel,
+                loginButton,
+                navigateToRegisterViewButton,
+                emailInput,
+                passwordInput
         );
     }
 
@@ -307,14 +312,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
         RegisterController registerController = new RegisterController(
-            this,
-            authViewModel,
-            registerButton,
-            navigateToSignInViewButton,
-            fullnameInput,
-            emailInput,
-            passwordInput,
-            confirmPasswordInput
+                this,
+                authViewModel,
+                registerButton,
+                navigateToSignInViewButton,
+                fullnameInput,
+                emailInput,
+                passwordInput,
+                confirmPasswordInput
         );
     }
 
@@ -333,14 +338,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
         UpdateProfileController updateProfileController = new UpdateProfileController(
-            this,
-            authViewModel,
-            updateButton,
-            navigateBackButton,
-            fullnameInput,
-            emailInput,
-            passwordInput,
-            newPasswordInput
+                this,
+                authViewModel,
+                updateButton,
+                navigateBackButton,
+                fullnameInput,
+                emailInput,
+                passwordInput,
+                newPasswordInput
         );
     }
 
@@ -373,6 +378,15 @@ public class MainActivity extends AppCompatActivity {
         } else {
             navigateSignIn();
         }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "CatTinder", NotificationManager.IMPORTANCE_HIGH);
+            NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            manager.createNotificationChannel(channel);
+        }
+
+        Intent intent = new Intent(this, NotificationService.class);
+        startService(intent);
     }
 
     public void setImageFromUri(ImageView imageView, Uri src) {
