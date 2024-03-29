@@ -6,24 +6,26 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.cattinder.MainActivity;
+import com.example.cattinder.Models.LikedCat;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.util.Objects;
+import java.util.ArrayList;
 import java.util.UUID;
-import java.util.concurrent.Executor;
+import java.util.concurrent.CompletableFuture;
 
 public class AuthViewModel extends AppCompatActivity {
     private final FirebaseAuth auth;
@@ -43,12 +45,12 @@ public class AuthViewModel extends AppCompatActivity {
             return;
         }
 
-        if (email == null || email.equals("")) {
+        if (email == null || email.isEmpty()) {
             main.snackbar("An email is required to sign in.");
             return;
         }
 
-        if (password == null || password.equals("")) {
+        if (password == null || password.isEmpty()) {
             main.snackbar("A password is required to sign in.");
             return;
         }
@@ -67,7 +69,7 @@ public class AuthViewModel extends AppCompatActivity {
     }
 
     public void tryRegister(
-            String fullname,
+            String fullName,
             String email,
             String password,
             String confirmPassword
@@ -76,22 +78,22 @@ public class AuthViewModel extends AppCompatActivity {
             main.snackbar("You are already signed in.");
             return;
         }
-        if (fullname == null || fullname.equals("")) {
+        if (fullName == null || fullName.isEmpty()) {
             main.snackbar("A name is required.");
             return;
         }
 
-        if (email == null || email.equals("")) {
+        if (email == null || email.isEmpty()) {
             main.snackbar("An email is required.");
             return;
         }
 
-        if (password == null || password.equals("")) {
+        if (password == null || password.isEmpty()) {
             main.snackbar("A password is required.");
             return;
         }
 
-        if (confirmPassword == null || confirmPassword.equals("")) {
+        if (confirmPassword == null || confirmPassword.isEmpty()) {
             main.snackbar("Please confirm your password.");
             return;
         }
@@ -107,7 +109,7 @@ public class AuthViewModel extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             auth.getCurrentUser()
-                                    .updateProfile(new UserProfileChangeRequest.Builder().setDisplayName(fullname).build())
+                                    .updateProfile(new UserProfileChangeRequest.Builder().setDisplayName(fullName).build())
                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
@@ -164,22 +166,22 @@ public class AuthViewModel extends AppCompatActivity {
             String oldPassword,
             String newPassword
     ) {
-        if (name == null || name.equals("")) {
+        if (name == null || name.isEmpty()) {
             main.snackbar("A name is required.");
             return;
         }
 
-        if (email == null || email.equals("")) {
+        if (email == null || email.isEmpty()) {
             main.snackbar("An email is required.");
             return;
         }
 
-        if (oldPassword == null || oldPassword.equals("")) {
+        if (oldPassword == null || oldPassword.isEmpty()) {
             main.snackbar("Your current account password is required.");
             return;
         }
 
-        if (newPassword == null || newPassword.equals("")) {
+        if (newPassword == null || newPassword.isEmpty()) {
             main.snackbar("A new password is required.");
             return;
         }
@@ -245,5 +247,61 @@ public class AuthViewModel extends AppCompatActivity {
         }
 
         return auth.getCurrentUser().getDisplayName();
+    }
+
+    public void addToLikeHistory(String imageUrl, String name) {
+        if (auth.getCurrentUser() == null) {
+            main.snackbar("You are not signed in.");
+            return;
+        }
+
+        LikedCat cat = new LikedCat(imageUrl, name);
+
+        FirebaseFirestore
+            .getInstance()
+            .collection("history")
+            .document(auth.getCurrentUser().getUid())
+            .collection("liked-cats")
+            .add(cat)
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        main.snackbar(e.getMessage());
+                    }
+                });
+    }
+
+    public CompletableFuture<ArrayList<LikedCat>> retrieveLikeHistory() {
+        if (auth.getCurrentUser() == null) {
+            main.snackbar("You are not signed in.");
+            return null;
+        }
+
+        CompletableFuture<ArrayList<LikedCat>> futureHistory = new CompletableFuture<>();
+
+        FirebaseFirestore
+            .getInstance()
+            .collection("history")
+            .document(auth.getCurrentUser().getUid())
+            .collection("liked-cats")
+            .get()
+            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    ArrayList<LikedCat> history = new ArrayList<>();
+
+                    if (task.isSuccessful()) {
+                        QuerySnapshot snapshot = task.getResult();
+
+                        history.addAll(snapshot.toObjects(LikedCat.class));
+                    } else {
+                        main.snackbar("An error occurred loading your history.");
+                    }
+
+                    futureHistory.complete(history);
+                }
+            });
+
+        return futureHistory;
     }
 }

@@ -16,6 +16,7 @@ import com.example.cattinder.MainActivity;
 import com.example.cattinder.MapActivity;
 import com.example.cattinder.PreferencesActivity;
 import com.example.cattinder.R;
+import com.example.cattinder.ViewModels.AuthViewModel;
 import com.example.cattinder.ViewModels.CardViewModel;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -27,6 +28,7 @@ public class MainController implements View.OnClickListener {
 
     private final CardViewModel cardViewModel;
     private final GestureDetector gestureDetector;
+    private final AuthViewModel auth;
 
     public MainController(
         CardViewModel cardViewModel,
@@ -35,9 +37,11 @@ public class MainController implements View.OnClickListener {
         ImageButton mapButton,
         View cardView,
         FloatingActionButton openDrawerButton,
-        DrawerLayout drawerLayout
+        DrawerLayout drawerLayout,
+        AuthViewModel auth
     ) {
         this.cardViewModel = cardViewModel;
+        this.auth = auth;
 
         dislikeButton.setOnClickListener(this);
         likeButton.setOnClickListener(this);
@@ -78,6 +82,10 @@ public class MainController implements View.OnClickListener {
     @Override
     public void onClick(View button) {
         if (button.getId() == R.id.dislike_button || button.getId() == R.id.like_button) {
+            if (button.getId() == R.id.like_button) {
+                auth.addToLikeHistory(cardViewModel.getImageUrl(), cardViewModel.getName());
+            }
+
             cardViewModel.newCat();
         } else if (button.getId() == R.id.map_button) {
             LatLng catLocation = cardViewModel.getCatLocation();

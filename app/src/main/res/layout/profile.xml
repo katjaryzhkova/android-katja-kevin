@@ -229,7 +229,8 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_marginStart="16dp"
-                            android:text="Unknown User" />
+                            android:text="Unknown User"
+                            android:textColor="#FFFFFF" />
                     </LinearLayout>
 
                 </RelativeLayout>
@@ -287,6 +288,32 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/profile_navigate_history"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginBottom="4dp"
+                    app:cardBackgroundColor="#ffffff"
+                    app:cardCornerRadius="8dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/home_link_nav_history"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="8dp"
+                            android:text="History" />
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
                     android:id="@+id/profile_navigate_preferences"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -294,7 +321,7 @@
                     android:layout_marginTop="4dp"
                     android:layout_marginRight="16dp"
                     android:layout_marginBottom="4dp"
-                    app:cardBackgroundColor="#7E7D7D"
+                    app:cardBackgroundColor="#ffffff"
                     app:cardCornerRadius="8dp">
 
                     <LinearLayout

@@ -4,11 +4,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.cardview.widget.CardView;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
@@ -16,8 +20,11 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.example.cattinder.Controllers.HistoryController;
 import com.example.cattinder.Controllers.LoginController;
 import com.example.cattinder.Controllers.MainController;
 import com.example.cattinder.Controllers.ProfileController;
@@ -41,12 +48,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setUpDrawer(
-            TextView nameText,
-            LinearLayout profile,
-            CardView homeLink,
-            CardView profileLink,
-            CardView settingsLink,
-            ImageView profilePicture
+        TextView nameText,
+        LinearLayout profile,
+        CardView homeLink,
+        CardView profileLink,
+        CardView historyLink,
+        CardView settingsLink,
+        ImageView profilePicture,
+        CardView activeLink
     ) {
         if (authViewModel == null) {
             authViewModel = new AuthViewModel(this);
@@ -75,6 +84,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        historyLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navigateToHistory();
+            }
+        });
+
         settingsLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,6 +99,28 @@ public class MainActivity extends AppCompatActivity {
         });
 
         setImageFromUri(profilePicture, authViewModel.getPhoto());
+
+        ScrollView drawer = findViewById(R.id.scrollView);
+
+        if(AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
+            drawer.setBackgroundColor(Color.BLACK);
+
+            if (homeLink != activeLink) {
+                homeLink.setCardBackgroundColor(Color.DKGRAY);
+            }
+
+            if (profileLink != activeLink) {
+                profileLink.setCardBackgroundColor(Color.DKGRAY);
+            }
+
+            if (historyLink != activeLink) {
+                historyLink.setCardBackgroundColor(Color.DKGRAY);
+            }
+
+            if (settingsLink != activeLink) {
+                settingsLink.setCardBackgroundColor(Color.DKGRAY);
+            }
+        }
     }
 
     public void navigateHome() {
@@ -99,9 +137,17 @@ public class MainActivity extends AppCompatActivity {
 
         if (cardViewModel == null) {
             cardViewModel = new CardViewModel(this);
-
-//            cardViewModel.newCat(); // Initial cat
         }
+
+        new Handler(Looper.getMainLooper()).postDelayed(
+            new Runnable() {
+                @Override
+                public void run() {
+                    cardViewModel.newCat();
+                }
+            },
+            1000
+        );
 
         if (authViewModel == null) {
             authViewModel = new AuthViewModel(this);
@@ -111,27 +157,30 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout profile = findViewById(R.id.user_profile);
         CardView homeLink = findViewById(R.id.home_navigate_home);
         CardView profileLink = findViewById(R.id.home_navigate_profile);
+        CardView historyLink = findViewById(R.id.home_navigate_history);
         CardView settingsLink = findViewById(R.id.home_navigate_preferences);
         ImageView profilePicture = findViewById(R.id.home_profile_picture);
 
-
         MainController mainController = new MainController(
-                cardViewModel,
-                dislikeButton,
-                likeButton,
-                mapButton,
-                cardView,
-                openDrawerButton,
-                drawerLayout
+            cardViewModel,
+            dislikeButton,
+            likeButton,
+            mapButton,
+            cardView,
+            openDrawerButton,
+            drawerLayout,
+            authViewModel
         );
 
         setUpDrawer(
-                nameText,
-                profile,
-                homeLink,
-                profileLink,
-                settingsLink,
-                profilePicture
+            nameText,
+            profile,
+            homeLink,
+            profileLink,
+            historyLink,
+            settingsLink,
+            profilePicture,
+            homeLink
         );
     }
 
@@ -150,6 +199,7 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout profile = findViewById(R.id.profile_user_profile);
         CardView homeLink = findViewById(R.id.profile_navigate_home);
         CardView profileLink = findViewById(R.id.profile_navigate_profile);
+        CardView historyLink = findViewById(R.id.profile_navigate_history);
         CardView settingsLink = findViewById(R.id.profile_navigate_preferences);
         ImageView navProfilePicture = findViewById(R.id.profile_profile_picture);
 
@@ -158,23 +208,65 @@ public class MainActivity extends AppCompatActivity {
         }
 
         new ProfileController(
-                logoutButton,
-                deleteAccountButton,
-                name,
-                authViewModel,
-                profilePicture,
-                openDrawerButton,
-                drawerLayout,
-                this
+            logoutButton,
+            deleteAccountButton,
+            name,
+            authViewModel,
+            profilePicture,
+            openDrawerButton,
+            drawerLayout,
+            this
         );
 
         setUpDrawer(
-                nameText,
-                profile,
-                homeLink,
-                profileLink,
-                settingsLink,
-                navProfilePicture
+            nameText,
+            profile,
+            homeLink,
+            profileLink,
+            historyLink,
+            settingsLink,
+            navProfilePicture,
+            profileLink
+        );
+    }
+
+    public void navigateToHistory() {
+        setContentView(R.layout.history);
+
+        RecyclerView recycler = findViewById(R.id.history_view);
+
+        FloatingActionButton openDrawerButton = findViewById(R.id.profile_open_drawer_button);
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+
+        TextView nameText = findViewById(R.id.name_text_2);
+        LinearLayout profile = findViewById(R.id.history_user_profile);
+        CardView homeLink = findViewById(R.id.history_navigate_home);
+        CardView profileLink = findViewById(R.id.history_navigate_profile);
+        CardView historyLink = findViewById(R.id.history_navigate_history);
+        CardView settingsLink = findViewById(R.id.history_navigate_preferences);
+        ImageView navProfilePicture = findViewById(R.id.history_profile_picture);
+
+        if (authViewModel == null) {
+            authViewModel = new AuthViewModel(this);
+        }
+
+        new HistoryController(
+            openDrawerButton,
+            drawerLayout,
+            authViewModel,
+            recycler,
+            this
+        );
+
+        setUpDrawer(
+            nameText,
+            profile,
+            homeLink,
+            profileLink,
+            historyLink,
+            settingsLink,
+            navProfilePicture,
+            historyLink
         );
     }
 
@@ -191,12 +283,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         LoginController loginController = new LoginController(
-                this,
-                authViewModel,
-                loginButton,
-                navigateToRegisterViewButton,
-                emailInput,
-                passwordInput
+            this,
+            authViewModel,
+            loginButton,
+            navigateToRegisterViewButton,
+            emailInput,
+            passwordInput
         );
     }
 
@@ -215,14 +307,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
         RegisterController registerController = new RegisterController(
-                this,
-                authViewModel,
-                registerButton,
-                navigateToSignInViewButton,
-                fullnameInput,
-                emailInput,
-                passwordInput,
-                confirmPasswordInput
+            this,
+            authViewModel,
+            registerButton,
+            navigateToSignInViewButton,
+            fullnameInput,
+            emailInput,
+            passwordInput,
+            confirmPasswordInput
         );
     }
 
@@ -241,14 +333,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
         UpdateProfileController updateProfileController = new UpdateProfileController(
-                this,
-                authViewModel,
-                updateButton,
-                navigateBackButton,
-                fullnameInput,
-                emailInput,
-                passwordInput,
-                newPasswordInput
+            this,
+            authViewModel,
+            updateButton,
+            navigateBackButton,
+            fullnameInput,
+            emailInput,
+            passwordInput,
+            newPasswordInput
         );
     }
 
@@ -260,10 +352,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            authViewModel.updatePhoto(data.getData());
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && intent != null && intent.getData() != null) {
+            authViewModel.updatePhoto(intent.getData());
         }
     }
 
