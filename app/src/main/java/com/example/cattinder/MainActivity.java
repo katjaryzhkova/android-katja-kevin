@@ -34,6 +34,7 @@ import com.example.cattinder.Controllers.MainController;
 import com.example.cattinder.Controllers.ProfileController;
 import com.example.cattinder.Controllers.RegisterController;
 import com.example.cattinder.Controllers.UpdateProfileController;
+import com.example.cattinder.Services.CatTinderService;
 import com.example.cattinder.Tasks.ImageLoadTask;
 import com.example.cattinder.ViewModels.AuthViewModel;
 import com.example.cattinder.ViewModels.CardViewModel;
@@ -385,7 +386,7 @@ public class MainActivity extends AppCompatActivity {
             manager.createNotificationChannel(channel);
         }
 
-        Intent intent = new Intent(this, NotificationService.class);
+        Intent intent = new Intent(this, CatTinderService.class);
         startService(intent);
     }
 

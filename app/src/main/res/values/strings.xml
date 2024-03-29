@@ -14,4 +14,7 @@
     <string name="update_button">Update profile</string>
     <string name="current_password_hint">Current Password</string>
     <string name="new_password_hint">New Password</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="app_widget_description">This is an app widget description</string>
 </resources>
