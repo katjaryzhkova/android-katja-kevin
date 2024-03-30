@@ -241,6 +241,11 @@ public class AuthViewModel {
     ) {
         final FirebaseUser user = auth.getCurrentUser();
 
+        if (password == null || password.isEmpty()) {
+            snackbar(activity, "Your current account password is required.");
+            return;
+        }
+
         try {
             AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), password);
             user
@@ -270,6 +275,11 @@ public class AuthViewModel {
     public String getName(
         AppCompatActivity activity
     ) {
+        if (!MainActivity.isNetworkAvailable(activity)) {
+            Snackbar.make(activity.findViewById(android.R.id.content), "An internet connection is required to use CatTinder", 999999999).show();
+            return "Unknown user";
+        }
+
         if (auth.getCurrentUser() == null) {
             snackbar(activity, "You are not signed in.");
             return "";
@@ -311,12 +321,19 @@ public class AuthViewModel {
     public CompletableFuture<ArrayList<LikedCat>> retrieveLikeHistory(
         AppCompatActivity activity
     ) {
-        if (auth.getCurrentUser() == null) {
-            snackbar(activity, "You are not signed in.");
-            return null;
+        CompletableFuture<ArrayList<LikedCat>> futureHistory = new CompletableFuture<>();
+
+        if (!MainActivity.isNetworkAvailable(activity)) {
+            futureHistory.complete(null);
+            return futureHistory;
         }
 
-        CompletableFuture<ArrayList<LikedCat>> futureHistory = new CompletableFuture<>();
+        if (auth.getCurrentUser() == null) {
+            snackbar(activity, "You are not signed in.");
+
+            futureHistory.complete(null);
+            return futureHistory;
+        }
 
         FirebaseFirestore
             .getInstance()

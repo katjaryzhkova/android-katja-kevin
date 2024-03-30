@@ -122,6 +122,10 @@ public class CatTinderService extends Service {
     }
 
     private LikedCat getNextCat(ArrayList<LikedCat> likedCats) {
+        if (currentCatIndex > likedCats.size()) {
+            return null;
+        }
+
         LikedCat nextCat = likedCats.get(currentCatIndex);
         currentCatIndex = (currentCatIndex + 1) % likedCats.size(); // Wrap around to the start of the list
         return nextCat;

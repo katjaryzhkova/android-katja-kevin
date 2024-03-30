@@ -46,6 +46,10 @@ public class LikedCatAdapter extends RecyclerView.Adapter<LikedCatAdapter.ViewHo
 
     @Override
     public int getItemCount() {
+        if (history == null) {
+            return 0;
+        }
+
         return history.size();
     }
 

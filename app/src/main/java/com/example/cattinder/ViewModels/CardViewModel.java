@@ -4,12 +4,15 @@ import android.app.Activity;
 import android.content.Context;
 
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -21,9 +24,11 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.example.cattinder.Activities.MainActivity;
 import com.example.cattinder.R;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,20 +37,53 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class CardViewModel {
-    private final Context context;
+    private final AppCompatActivity activity;
     private LatLng catLocation;
     private String imageUrl = "";
     private String name = "";
+    private Snackbar internetOfflineSnackbar;
 
-    public CardViewModel(Context context) {
-        this.context = context;
+    public CardViewModel(AppCompatActivity activity) {
+        this.activity = activity;
+    }
+
+    private boolean checkInternet() {
+        if (!MainActivity.isNetworkAvailable(activity)) {
+            if (internetOfflineSnackbar == null) {
+                internetOfflineSnackbar = Snackbar.make(activity.findViewById(android.R.id.content), "An internet connection is required to use CatTinder", 999999999);
+                internetOfflineSnackbar.show();
+            }
+
+            new Handler(Looper.getMainLooper()).postDelayed(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        checkInternet();
+                    }
+                },
+                1000
+            );
+            return false;
+        }
+
+        if (internetOfflineSnackbar != null) {
+            internetOfflineSnackbar.dismiss();
+            internetOfflineSnackbar = null;
+            newCat();
+        }
+
+        return true;
     }
 
     public void newCat() {
         try {
-            ProgressBar progressBar = ((Activity) context).findViewById(R.id.progress_bar);
+            ProgressBar progressBar = activity.findViewById(R.id.progress_bar);
 
             if (progressBar != null) {
+                if (!checkInternet()) {
+                    return;
+                }
+
                 progressBar.setVisibility(View.VISIBLE);
 
                 loadCatImage(new URL("https://api.thecatapi.com/v1/images/search"), progressBar);
@@ -55,7 +93,6 @@ public class CardViewModel {
     }
 
     private void loadCatImage(URL url, ProgressBar progressBar) {
-        Activity activity = (Activity) context;
         if (activity.isDestroyed()) {
             return;
         }
@@ -66,7 +103,7 @@ public class CardViewModel {
                 JSONObject jsonObject = response.getJSONObject(0);
                 imageUrl = jsonObject.getString("url");
 
-                Glide.with(context).load(imageUrl).listener(new RequestListener<Drawable>() {
+                Glide.with(activity).load(imageUrl).listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                         progressBar.setVisibility(View.GONE);
@@ -81,9 +118,9 @@ public class CardViewModel {
 
                 }).into(imageView);
             } catch (Exception ignored) { }
-        }, Throwable::printStackTrace);
+        }, error -> { });
 
-        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        RequestQueue requestQueue = Volley.newRequestQueue(activity);
         requestQueue.add(jsonArrayRequest);
     }
 
@@ -104,12 +141,12 @@ public class CardViewModel {
 
                 catLocation = new LatLng(latitude, longitude);
 
-                TextView textView = ((Activity) context).findViewById(R.id.cat_info);
+                TextView textView = activity.findViewById(R.id.cat_info);
                 textView.setText(this.name);
             } catch (Exception ignored) { }
-        }, Throwable::printStackTrace);
+        }, error -> { });
 
-        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        RequestQueue requestQueue = Volley.newRequestQueue(activity);
         requestQueue.add(jsonObjectRequest);
     }
 
