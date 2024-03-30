@@ -1,5 +1,6 @@
 package com.example.cattinder.Controllers;
 
+import android.content.res.Configuration;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,7 +34,14 @@ public class HistoryController {
         authViewModel.retrieveLikeHistory(activity).thenAccept(new Consumer<ArrayList<LikedCat>>() {
             @Override
             public void accept(ArrayList<LikedCat> history) {
-                RecyclerView.LayoutManager manager = new GridLayoutManager(activity, 3);
+                RecyclerView.LayoutManager manager;
+
+                if (activity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    manager = new GridLayoutManager(activity, 5);
+                } else {
+                    manager = new GridLayoutManager(activity, 3);
+                }
+
                 recycler.setLayoutManager(manager);
                 recycler.setAdapter(new LikedCatAdapter(history, activity));
             }

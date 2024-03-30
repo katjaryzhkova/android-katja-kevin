@@ -164,7 +164,8 @@ public class AuthViewModel {
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void unused) {
-                                        // main.navigateToProfile();
+                                        activity.startActivity(new Intent(activity, ProfileActivity.class));
+                                        activity.finish();
                                     }
                                 })
                                 .addOnFailureListener(new OnFailureListener() {

@@ -78,6 +78,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         Intent intent = new Intent(this, CatTinderService.class);
-        startService(intent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(intent);
+        } else {
+            startService(intent);
+        }
     }
 }
