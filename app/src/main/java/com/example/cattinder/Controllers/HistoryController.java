@@ -1,17 +1,13 @@
 package com.example.cattinder.Controllers;
 
 import android.view.View;
-import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cattinder.Adapters.LikedCatAdapter;
-import com.example.cattinder.MainActivity;
 import com.example.cattinder.Models.LikedCat;
 import com.example.cattinder.ViewModels.AuthViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -25,7 +21,7 @@ public class HistoryController {
         DrawerLayout drawerLayout,
         AuthViewModel authViewModel,
         RecyclerView recycler,
-        MainActivity main
+        AppCompatActivity activity
     ) {
         openDrawerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -34,12 +30,12 @@ public class HistoryController {
             }
         });
 
-        RecyclerView.LayoutManager manager = new GridLayoutManager(main, 3);
-        recycler.setLayoutManager(manager);
-        authViewModel.retrieveLikeHistory().thenAccept(new Consumer<ArrayList<LikedCat>>() {
+        authViewModel.retrieveLikeHistory(activity).thenAccept(new Consumer<ArrayList<LikedCat>>() {
             @Override
             public void accept(ArrayList<LikedCat> history) {
-                recycler.setAdapter(new LikedCatAdapter(history, main));
+                RecyclerView.LayoutManager manager = new GridLayoutManager(activity, 3);
+                recycler.setLayoutManager(manager);
+                recycler.setAdapter(new LikedCatAdapter(history, activity));
             }
         });
     }

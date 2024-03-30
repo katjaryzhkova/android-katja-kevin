@@ -9,25 +9,27 @@ import android.os.AsyncTask;
 import android.widget.ImageView;
 import android.widget.RemoteViews;
 
-import com.example.cattinder.MainActivity;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.cattinder.Widgets.CatTinderWidget;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class ImageLoadTask extends AsyncTask<Void, Void, Bitmap> {
-    private MainActivity main;
+    private AppCompatActivity activity;
     private Context context;
     private String url;
     private ImageView imageView;
     private RemoteViews remoteViews;
     private int imageViewId;
 
-    public ImageLoadTask(MainActivity main, String url, ImageView imageView) {
+    public ImageLoadTask(AppCompatActivity activity, String url, ImageView imageView) {
+        this.activity = activity;
         this.url = url;
         this.imageView = imageView;
-        this.main = main;
     }
 
     // This constructor is used for loading images into widgets
@@ -49,7 +51,9 @@ public class ImageLoadTask extends AsyncTask<Void, Void, Bitmap> {
             InputStream input = connection.getInputStream();
             return BitmapFactory.decodeStream(input);
         } catch (Exception e) {
-            main.snackbar(e.toString());
+            if (activity != null) {
+                Snackbar.make(activity.findViewById(android.R.id.content), e.getMessage(), Snackbar.LENGTH_LONG).show();
+            }
         }
         return null;
     }
@@ -58,10 +62,15 @@ public class ImageLoadTask extends AsyncTask<Void, Void, Bitmap> {
     protected void onPostExecute(Bitmap result) {
         super.onPostExecute(result);
         if (result != null) {
+            if (imageView != null) {
+                imageView.setImageBitmap(result);
+            }
+
             if (remoteViews != null && context != null) {
                 remoteViews.setImageViewBitmap(imageViewId, result);
                 AppWidgetManager.getInstance(context).updateAppWidget(new ComponentName(context, CatTinderWidget.class), remoteViews);
             }
         }
     }
+
 }

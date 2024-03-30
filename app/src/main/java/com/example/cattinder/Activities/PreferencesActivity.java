@@ -1,5 +1,6 @@
-package com.example.cattinder;
+package com.example.cattinder.Activities;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -9,6 +10,8 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 
+import com.example.cattinder.R;
+import com.example.cattinder.databinding.SettingsActivityBinding;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class PreferencesActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -16,7 +19,12 @@ public class PreferencesActivity extends AppCompatActivity implements SharedPref
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.settings_activity);
+
+        overridePendingTransition(0, 0);
+
+        SettingsActivityBinding binding = SettingsActivityBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.settings, new SettingsFragment())
@@ -29,8 +37,10 @@ public class PreferencesActivity extends AppCompatActivity implements SharedPref
         PreferenceManager.getDefaultSharedPreferences(this)
                 .registerOnSharedPreferenceChangeListener(this);
 
-        FloatingActionButton backButton = findViewById(R.id.settings_back_button);
-        backButton.setOnClickListener(v -> finish());
+        binding.settingsBackButton.setOnClickListener(v -> {
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+        });
     }
 
     @Override

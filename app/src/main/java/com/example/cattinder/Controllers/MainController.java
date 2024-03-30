@@ -1,33 +1,27 @@
 package com.example.cattinder.Controllers;
 
-import static androidx.core.content.ContextCompat.startActivity;
-
 import android.content.Intent;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.example.cattinder.MainActivity;
-import com.example.cattinder.MapActivity;
-import com.example.cattinder.PreferencesActivity;
+import com.example.cattinder.Activities.MapActivity;
 import com.example.cattinder.R;
 import com.example.cattinder.ViewModels.AuthViewModel;
 import com.example.cattinder.ViewModels.CardViewModel;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import kotlin.NotImplementedError;
-
 // MainController.java
 public class MainController implements View.OnClickListener {
 
     private final CardViewModel cardViewModel;
     private final GestureDetector gestureDetector;
+    private final AppCompatActivity activity;
     private final AuthViewModel auth;
 
     public MainController(
@@ -38,10 +32,12 @@ public class MainController implements View.OnClickListener {
         View cardView,
         FloatingActionButton openDrawerButton,
         DrawerLayout drawerLayout,
-        AuthViewModel auth
+        AuthViewModel auth,
+        AppCompatActivity activity
     ) {
         this.cardViewModel = cardViewModel;
         this.auth = auth;
+        this.activity = activity;
 
         dislikeButton.setOnClickListener(this);
         likeButton.setOnClickListener(this);
@@ -83,7 +79,7 @@ public class MainController implements View.OnClickListener {
     public void onClick(View button) {
         if (button.getId() == R.id.dislike_button || button.getId() == R.id.like_button) {
             if (button.getId() == R.id.like_button) {
-                auth.addToLikeHistory(cardViewModel.getImageUrl(), cardViewModel.getName());
+                auth.addToLikeHistory(activity, cardViewModel.getImageUrl(), cardViewModel.getName());
             }
 
             cardViewModel.newCat();

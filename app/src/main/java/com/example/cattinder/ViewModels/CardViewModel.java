@@ -44,13 +44,14 @@ public class CardViewModel {
     public void newCat() {
         try {
             ProgressBar progressBar = ((Activity) context).findViewById(R.id.progress_bar);
-            progressBar.setVisibility(View.VISIBLE);
 
-            loadCatImage(new URL("https://api.thecatapi.com/v1/images/search"), progressBar);
-            loadUserData(new URL("https://randomuser.me/api/"));
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
+            if (progressBar != null) {
+                progressBar.setVisibility(View.VISIBLE);
+
+                loadCatImage(new URL("https://api.thecatapi.com/v1/images/search"), progressBar);
+                loadUserData(new URL("https://randomuser.me/api/"));
+            }
+        } catch (Exception ignored) { }
     }
 
     private void loadCatImage(URL url, ProgressBar progressBar) {
@@ -79,9 +80,7 @@ public class CardViewModel {
                     }
 
                 }).into(imageView);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            } catch (Exception ignored) { }
         }, Throwable::printStackTrace);
 
         RequestQueue requestQueue = Volley.newRequestQueue(context);
@@ -107,9 +106,7 @@ public class CardViewModel {
 
                 TextView textView = ((Activity) context).findViewById(R.id.cat_info);
                 textView.setText(this.name);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            } catch (Exception ignored) { }
         }, Throwable::printStackTrace);
 
         RequestQueue requestQueue = Volley.newRequestQueue(context);

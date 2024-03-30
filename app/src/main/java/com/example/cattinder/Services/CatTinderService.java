@@ -10,19 +10,16 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.widget.RemoteViews;
 
-import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
-import com.example.cattinder.MainActivity;
+import com.example.cattinder.Activities.MainActivity;
 import com.example.cattinder.Models.LikedCat;
 import com.example.cattinder.R;
 import com.example.cattinder.Tasks.ImageLoadTask;
 import com.example.cattinder.Widgets.CatTinderWidget;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
@@ -89,10 +86,16 @@ public class CatTinderService extends Service {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
         RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.cat_tinder_widget);
 
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user == null) {
+            return;
+        }
+
         FirebaseFirestore
                 .getInstance()
                 .collection("history")
-                .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .document(user.getUid())
                 .collection("liked-cats")
                 .get()
                 .addOnCompleteListener(task -> {

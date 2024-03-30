@@ -7,32 +7,32 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.example.cattinder.MainActivity;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.cattinder.ViewModels.AuthViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class UpdateProfileController {
     public UpdateProfileController(
-            MainActivity main,
-            AuthViewModel authViewModel,
-            Button updateButton,
-            FloatingActionButton navigateBackButton,
-            EditText fullnameInput,
-            EditText emailInput,
-            EditText passwordInput,
-            EditText newPasswordInput
+        AppCompatActivity activity,
+        AuthViewModel authViewModel,
+        Button updateButton,
+        FloatingActionButton navigateBackButton,
+        EditText fullnameInput,
+        EditText passwordInput,
+        EditText newPasswordInput
     ) {
         updateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getSystemService(main, InputMethodManager.class)
-                        .hideSoftInputFromWindow(v.getWindowToken(), 0);
+                getSystemService(activity, InputMethodManager.class)
+                    .hideSoftInputFromWindow(v.getWindowToken(), 0);
 
                 authViewModel.updateProfile(
-                        fullnameInput.getText().toString(),
-                        emailInput.getText().toString(),
-                        passwordInput.getText().toString(),
-                        newPasswordInput.getText().toString()
+                    activity,
+                    fullnameInput.getText().toString(),
+                    passwordInput.getText().toString(),
+                    newPasswordInput.getText().toString()
                 );
             }
         });
@@ -40,7 +40,7 @@ public class UpdateProfileController {
         navigateBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                main.navigateToProfile();
+                activity.finish();
             }
         });
     }

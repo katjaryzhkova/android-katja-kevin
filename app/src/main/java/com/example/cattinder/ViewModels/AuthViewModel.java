@@ -1,16 +1,20 @@
 package com.example.cattinder.ViewModels;
 
+import android.content.Intent;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.cattinder.MainActivity;
+import com.example.cattinder.Activities.MainActivity;
+import com.example.cattinder.Activities.ProfileActivity;
+import com.example.cattinder.Activities.SignInActivity;
 import com.example.cattinder.Models.LikedCat;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -27,162 +31,172 @@ import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-public class AuthViewModel extends AppCompatActivity {
-    private final FirebaseAuth auth;
-    private final MainActivity main;
+public class AuthViewModel {
+    private static AuthViewModel instance;
+    public static AuthViewModel getInstance() {
+        if (instance == null) {
+            instance = new AuthViewModel();
+        }
 
-    public AuthViewModel(MainActivity main) {
+        return instance;
+    }
+
+    private final FirebaseAuth auth;
+
+    public AuthViewModel() {
         this.auth = FirebaseAuth.getInstance();
-        this.main = main;
+    }
+
+    private void snackbar(AppCompatActivity activity, String message) {
+        Snackbar.make(activity.findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG).show();
     }
 
     public void tryLogIn(
-            String email,
-            String password
+        AppCompatActivity activity,
+        String email,
+        String password
     ) {
         if (auth.getCurrentUser() != null) {
-            main.snackbar("You are already signed in.");
+            snackbar(activity, "You are already signed in.");
             return;
         }
 
         if (email == null || email.isEmpty()) {
-            main.snackbar("An email is required to sign in.");
+            snackbar(activity, "An email is required to sign in.");
             return;
         }
 
         if (password == null || password.isEmpty()) {
-            main.snackbar("A password is required to sign in.");
+            snackbar(activity, "A password is required to sign in.");
             return;
         }
 
         auth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            main.navigateHome();
-                        } else {
-                            main.snackbar(task.getException().getMessage());
-                        }
+            .addOnCompleteListener(activity, new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (task.isSuccessful()) {
+                        activity.startActivity(new Intent(activity, MainActivity.class));
+                        activity.finish();
+                    } else {
+                        snackbar(activity, task.getException().getMessage());
                     }
-                });
+                }
+            });
     }
 
     public void tryRegister(
-            String fullName,
-            String email,
-            String password,
-            String confirmPassword
+        AppCompatActivity activity,
+        String fullName,
+        String email,
+        String password,
+        String confirmPassword
     ) {
         if (auth.getCurrentUser() != null) {
-            main.snackbar("You are already signed in.");
+            snackbar(activity, "You are already signed in.");
             return;
         }
         if (fullName == null || fullName.isEmpty()) {
-            main.snackbar("A name is required.");
+            snackbar(activity, "A name is required.");
             return;
         }
 
         if (email == null || email.isEmpty()) {
-            main.snackbar("An email is required.");
+            snackbar(activity, "An email is required.");
             return;
         }
 
         if (password == null || password.isEmpty()) {
-            main.snackbar("A password is required.");
+            snackbar(activity, "A password is required.");
             return;
         }
 
         if (confirmPassword == null || confirmPassword.isEmpty()) {
-            main.snackbar("Please confirm your password.");
+            snackbar(activity, "Please confirm your password.");
             return;
         }
 
         if (!password.equals(confirmPassword)) {
-            main.snackbar("The passwords do not match.");
+            snackbar(activity, "The passwords do not match.");
             return;
         }
 
         auth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            auth.getCurrentUser()
-                                    .updateProfile(new UserProfileChangeRequest.Builder().setDisplayName(fullName).build())
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            auth.signOut();
-                                            tryLogIn(email, password);
-                                        }
-                                    });
-                        } else {
-                            main.snackbar(task.getException().getMessage());
-                        }
+            .addOnCompleteListener(activity, new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (task.isSuccessful()) {
+                        auth.getCurrentUser()
+                                .updateProfile(new UserProfileChangeRequest.Builder().setDisplayName(fullName).build())
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        auth.signOut();
+                                        tryLogIn(activity, email, password);
+                                    }
+                                });
+                    } else {
+                        snackbar(activity, task.getException().getMessage());
                     }
-                });
+                }
+            });
     }
 
     public void updatePhoto(
-            Uri path
+        AppCompatActivity activity,
+        Uri path
     ) {
         StorageReference ref = FirebaseStorage
-                .getInstance()
-                .getReference()
-                .child("images/" + UUID.randomUUID().toString());
+            .getInstance()
+            .getReference()
+            .child("images/" + UUID.randomUUID().toString());
 
         ref
-                .putFile(path)
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                            @Override
-                            public void onSuccess(@NonNull Uri uri) {
-                                auth.getCurrentUser()
-                                        .updateProfile(new UserProfileChangeRequest.Builder().setPhotoUri(uri).build())
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void unused) {
-                                                main.navigateToProfile();
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                main.snackbar("Failed uploading profile picture: " + e.getMessage());
-                                            }
-                                        });
-                            }
-                        });
-                    }
-                });
+            .putFile(path)
+            .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(@NonNull Uri uri) {
+                            auth.getCurrentUser()
+                                .updateProfile(new UserProfileChangeRequest.Builder().setPhotoUri(uri).build())
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        // main.navigateToProfile();
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        snackbar(activity, "Failed uploading profile picture: " + e.getMessage());
+                                    }
+                                });
+                        }
+                    });
+                }
+            });
     }
 
     public void updateProfile(
-            String name,
-            String email,
-            String oldPassword,
-            String newPassword
+        AppCompatActivity activity,
+        String name,
+        String oldPassword,
+        String newPassword
     ) {
         if (name == null || name.isEmpty()) {
-            main.snackbar("A name is required.");
-            return;
-        }
-
-        if (email == null || email.isEmpty()) {
-            main.snackbar("An email is required.");
+            snackbar(activity, "A name is required.");
             return;
         }
 
         if (oldPassword == null || oldPassword.isEmpty()) {
-            main.snackbar("Your current account password is required.");
+            snackbar(activity, "Your current account password is required.");
             return;
         }
 
         if (newPassword == null || newPassword.isEmpty()) {
-            main.snackbar("A new password is required.");
+            snackbar(activity, "A new password is required.");
             return;
         }
 
@@ -192,18 +206,14 @@ public class AuthViewModel extends AppCompatActivity {
         user.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                user.updateEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
+                user.updatePassword(newPassword).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        user.updatePassword(newPassword).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        user.updateProfile(new UserProfileChangeRequest.Builder().setDisplayName(name).build()).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
-                                user.updateProfile(new UserProfileChangeRequest.Builder().setDisplayName(name).build()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        main.navigateToProfile();
-                                    }
-                                });
+                                activity.startActivity(new Intent(activity, ProfileActivity.class));
+                                activity.finish();
                             }
                         });
                     }
@@ -216,42 +226,68 @@ public class AuthViewModel extends AppCompatActivity {
         return auth.getCurrentUser().getPhotoUrl();
     }
 
-    public void logOut() {
+    public void logOut(
+        AppCompatActivity activity
+    ) {
         auth.signOut();
-        main.navigateSignIn();
+        activity.startActivity(new Intent(activity, SignInActivity.class));
+        activity.finish();
     }
 
     public void deleteAccount(
-            String password
+        AppCompatActivity activity,
+        String password
     ) {
         final FirebaseUser user = auth.getCurrentUser();
 
-        AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), password);
-        user.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                user.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+        try {
+            AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), password);
+            user
+                .reauthenticate(credential)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        logOut();
+                    public void onSuccess(Void unused) {
+                        user.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                logOut(activity);
+                            }
+                        });
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        snackbar(activity, e.getMessage());
                     }
                 });
-            }
-        });
+        } catch (Exception e) {
+            snackbar(activity, e.getMessage());
+        }
     }
 
-    public String getName() {
+    public String getName(
+        AppCompatActivity activity
+    ) {
         if (auth.getCurrentUser() == null) {
-            main.snackbar("You are not signed in.");
+            snackbar(activity, "You are not signed in.");
             return "";
         }
 
         return auth.getCurrentUser().getDisplayName();
     }
 
-    public void addToLikeHistory(String imageUrl, String name) {
+    public void addToLikeHistory(
+        AppCompatActivity activity,
+        String imageUrl,
+        String name
+    ) {
         if (auth.getCurrentUser() == null) {
-            main.snackbar("You are not signed in.");
+            snackbar(activity, "You are not signed in.");
+            return;
+        }
+
+        if (imageUrl.isEmpty() || name.isEmpty()) {
             return;
         }
 
@@ -263,17 +299,19 @@ public class AuthViewModel extends AppCompatActivity {
             .document(auth.getCurrentUser().getUid())
             .collection("liked-cats")
             .add(cat)
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        main.snackbar(e.getMessage());
-                    }
-                });
+            .addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    snackbar(activity, e.getMessage());
+                }
+            });
     }
 
-    public CompletableFuture<ArrayList<LikedCat>> retrieveLikeHistory() {
+    public CompletableFuture<ArrayList<LikedCat>> retrieveLikeHistory(
+        AppCompatActivity activity
+    ) {
         if (auth.getCurrentUser() == null) {
-            main.snackbar("You are not signed in.");
+            snackbar(activity, "You are not signed in.");
             return null;
         }
 
@@ -295,7 +333,7 @@ public class AuthViewModel extends AppCompatActivity {
 
                         history.addAll(snapshot.toObjects(LikedCat.class));
                     } else {
-                        main.snackbar("An error occurred loading your history.");
+                        snackbar(activity, "An error occurred loading your history.");
                     }
 
                     futureHistory.complete(history);
