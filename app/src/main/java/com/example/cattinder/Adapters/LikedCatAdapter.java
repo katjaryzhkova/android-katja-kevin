@@ -1,7 +1,6 @@
 package com.example.cattinder.Adapters;
 
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -11,8 +10,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cattinder.Models.LikedCat;
-import com.example.cattinder.R;
 import com.example.cattinder.Tasks.ImageLoadTask;
+import com.example.cattinder.databinding.LikedCatBinding;
 
 import java.util.ArrayList;
 
@@ -29,11 +28,13 @@ public class LikedCatAdapter extends RecyclerView.Adapter<LikedCatAdapter.ViewHo
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater
-            .from(parent.getContext())
-            .inflate(R.layout.liked_cat, parent, false);
+        LikedCatBinding binding = LikedCatBinding.inflate(
+            LayoutInflater.from(parent.getContext()),
+            parent,
+            false
+        );
 
-        return new ViewHolder(itemView);
+        return new ViewHolder(binding);
     }
 
     @Override
@@ -57,10 +58,10 @@ public class LikedCatAdapter extends RecyclerView.Adapter<LikedCatAdapter.ViewHo
         ImageView image;
         TextView name;
 
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            image = itemView.findViewById(R.id.liked_cat_image);
-            name = itemView.findViewById(R.id.liked_cat_name);
+        public ViewHolder(@NonNull LikedCatBinding binding) {
+            super(binding.getRoot());
+            image = binding.likedCatImage;
+            name = binding.likedCatName;
         }
     }
 }

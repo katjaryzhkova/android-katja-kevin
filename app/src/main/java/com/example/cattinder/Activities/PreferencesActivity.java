@@ -12,7 +12,6 @@ import androidx.preference.PreferenceManager;
 
 import com.example.cattinder.R;
 import com.example.cattinder.databinding.SettingsActivityBinding;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class PreferencesActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -26,16 +25,16 @@ public class PreferencesActivity extends AppCompatActivity implements SharedPref
         setContentView(binding.getRoot());
 
         getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.settings, new SettingsFragment())
-                .commit();
+            .beginTransaction()
+            .replace(R.id.settings, new SettingsFragment())
+            .commit();
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
         PreferenceManager.getDefaultSharedPreferences(this)
-                .registerOnSharedPreferenceChangeListener(this);
+            .registerOnSharedPreferenceChangeListener(this);
 
         binding.settingsBackButton.setOnClickListener(v -> {
             startActivity(new Intent(this, MainActivity.class));
@@ -45,7 +44,7 @@ public class PreferencesActivity extends AppCompatActivity implements SharedPref
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals("dark_mode")) {
+        if (key != null && key.equals("dark_mode")) {
             boolean darkMode = sharedPreferences.getBoolean(key, false);
             AppCompatDelegate.setDefaultNightMode(darkMode ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
             // Recreate the activity

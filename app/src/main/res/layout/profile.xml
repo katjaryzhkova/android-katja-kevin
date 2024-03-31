@@ -16,10 +16,11 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             android:src="@android:drawable/ic_menu_more"
-            android:translationX="24px"
-            android:translationY="24px"
-            tools:layout_editor_absoluteX="9dp"
-            tools:layout_editor_absoluteY="9dp" />
+            android:translationX="24dp"
+            android:translationY="24dp"
+            android:focusable="true"
+            android:contentDescription="@string/open_navigation_drawer"
+            tools:ignore="MissingConstraints" />
 
         <LinearLayout
             android:id="@+id/drawerLinearLayoutProfile"
@@ -52,7 +53,8 @@
                             android:layout_width="64dp"
                             android:layout_height="64dp"
                             android:src="@drawable/profile_icon"
-                            app:srcCompat="@drawable/profile_icon" />
+                            app:srcCompat="@drawable/profile_icon"
+                            android:contentDescription="@string/profile_picture" />
                     </androidx.cardview.widget.CardView>
 
                     <TextView
@@ -62,7 +64,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="16dp"
                         android:gravity="center_vertical"
-                        android:text="Unknown User" />
+                        android:text="@string/unknown_user" />
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
@@ -77,7 +79,7 @@
                     android:id="@+id/textView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="ACCOUNT"
+                    android:text="@string/account"
                     android:textColor="#808080" />
 
                 <androidx.cardview.widget.CardView
@@ -110,7 +112,8 @@
                                     android:src="@android:drawable/ic_menu_close_clear_cancel"
                                     android:tintMode="screen"
                                     app:srcCompat="@android:drawable/ic_menu_close_clear_cancel"
-                                    app:tint="#FF5E5E" />
+                                    app:tint="#FF5E5E"
+                                    android:contentDescription="@string/sign_out" />
                             </androidx.cardview.widget.CardView>
 
                             <TextView
@@ -119,7 +122,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginStart="8dp"
-                                android:text="Sign Out" />
+                                android:text="@string/sign_out" />
                         </LinearLayout>
 
                         <RelativeLayout
@@ -149,7 +152,8 @@
                                     android:src="@android:drawable/ic_menu_delete"
                                     android:tintMode="screen"
                                     app:srcCompat="@android:drawable/ic_menu_delete"
-                                    app:tint="#FF5E5E" />
+                                    app:tint="#FF5E5E"
+                                    android:contentDescription="@string/delete_account" />
                             </androidx.cardview.widget.CardView>
 
                             <TextView
@@ -158,7 +162,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginStart="8dp"
-                                android:text="Delete account" />
+                                android:text="@string/delete_account" />
                         </LinearLayout>
                     </LinearLayout>
 

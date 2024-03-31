@@ -1,10 +1,8 @@
 package com.example.cattinder.Controllers;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.text.InputType;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -31,48 +29,25 @@ public class ProfileController {
         DrawerLayout drawerLayout,
         AppCompatActivity activity
     ) {
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                authViewModel.logOut(activity);
-            }
+        logoutButton.setOnClickListener(v -> authViewModel.logOut(activity));
+
+        deleteAccountButton.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            builder.setTitle("Confirm your password to delete your account");
+
+            final EditText input = new EditText(activity);
+
+            input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            builder.setView(input);
+
+            builder.setPositiveButton("OK", (dialog, which) -> authViewModel.deleteAccount(activity, input.getText().toString()));
+
+            builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+
+            builder.show();
         });
 
-        deleteAccountButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                builder.setTitle("Confirm your password to delete your account");
-
-                final EditText input = new EditText(activity);
-
-                input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                builder.setView(input);
-
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        authViewModel.deleteAccount(activity, input.getText().toString());
-                    }
-                });
-
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-
-                builder.show();
-            }
-        });
-
-        openDrawerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                drawerLayout.open();
-            }
-        });
+        openDrawerButton.setOnClickListener(v -> drawerLayout.open());
 
         name.setText(authViewModel.getName(activity));
         Uri src = authViewModel.getPhoto();
@@ -80,21 +55,13 @@ public class ProfileController {
             new ImageLoadTask(activity, src.toString(), profilePicture).execute();
         }
 
-        profilePicture.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                activity.startActivityForResult(Intent.createChooser(intent, "Select Picture"), ProfileActivity.PICK_IMAGE_REQUEST);
-            }
+        profilePicture.setOnClickListener(v -> {
+            Intent intent = new Intent();
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            activity.startActivityForResult(Intent.createChooser(intent, "Select Picture"), ProfileActivity.PICK_IMAGE_REQUEST);
         });
 
-        name.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                activity.startActivity(new Intent(activity, EditProfileActivity.class));
-            }
-        });
+        name.setOnClickListener(v -> activity.startActivity(new Intent(activity, EditProfileActivity.class)));
     }
 }

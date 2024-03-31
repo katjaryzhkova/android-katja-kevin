@@ -14,11 +14,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.preference.PreferenceManager;
 
-import com.example.cattinder.Activities.SignInActivity;
 import com.example.cattinder.Controllers.MainController;
 import com.example.cattinder.Services.CatTinderService;
 import com.example.cattinder.Tasks.LoadDrawerTask;
@@ -31,10 +28,10 @@ public class MainActivity extends AppCompatActivity {
     public static String CHANNEL_ID = "CAT_TINDER";
     private CardViewModel cardViewModel;
 
-    public static boolean isNetworkAvailable(AppCompatActivity activity) {
+    public static boolean isNetworkUnavailable(AppCompatActivity activity) {
         ConnectivityManager connectivityManager = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager != null ? connectivityManager.getActiveNetworkInfo() : null;
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        return activeNetworkInfo == null || !activeNetworkInfo.isConnected();
     }
 
     @Override
@@ -53,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
             setContentView(binding.getRoot());
 
             if (cardViewModel == null) {
-                cardViewModel = new CardViewModel(this);
+                cardViewModel = new CardViewModel(this, binding);
             }
 
             cardViewModel.newCat();

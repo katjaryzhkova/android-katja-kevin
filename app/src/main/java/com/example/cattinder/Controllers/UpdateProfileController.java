@@ -2,7 +2,6 @@ package com.example.cattinder.Controllers;
 
 import static androidx.core.content.ContextCompat.getSystemService;
 
-import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,30 +17,24 @@ public class UpdateProfileController {
         AuthViewModel authViewModel,
         Button updateButton,
         FloatingActionButton navigateBackButton,
-        EditText fullnameInput,
+        EditText fullNameInput,
         EditText passwordInput,
         EditText newPasswordInput
     ) {
-        updateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getSystemService(activity, InputMethodManager.class)
-                    .hideSoftInputFromWindow(v.getWindowToken(), 0);
+        updateButton.setOnClickListener(v -> {
+            InputMethodManager inputMethodManager = getSystemService(activity, InputMethodManager.class);
+            assert inputMethodManager != null;
 
-                authViewModel.updateProfile(
-                    activity,
-                    fullnameInput.getText().toString(),
-                    passwordInput.getText().toString(),
-                    newPasswordInput.getText().toString()
-                );
-            }
+            inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+            authViewModel.updateProfile(
+                activity,
+                fullNameInput.getText().toString(),
+                passwordInput.getText().toString(),
+                newPasswordInput.getText().toString()
+            );
         });
 
-        navigateBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                activity.finish();
-            }
-        });
+        navigateBackButton.setOnClickListener(v -> activity.finish());
     }
 }

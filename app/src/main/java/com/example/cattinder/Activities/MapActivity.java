@@ -6,16 +6,13 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.example.cattinder.R;
+import com.example.cattinder.databinding.MapBinding;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -24,13 +21,13 @@ import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
-import org.osmdroid.views.MapView;
 
 import java.util.Locale;
 
 public class MapActivity extends AppCompatActivity {
 
     private static final int REQUEST_LOCATION_PERMISSION = 1;
+    private MapBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,27 +35,25 @@ public class MapActivity extends AppCompatActivity {
 
         overridePendingTransition(0, 0);
 
-        setContentView(R.layout.map);
+        binding = MapBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         double latitude = getIntent().getDoubleExtra("latitude", 0);
         double longitude = getIntent().getDoubleExtra("longitude", 0);
 
         Configuration.getInstance().setUserAgentValue(getPackageName());
 
-        MapView map = findViewById(R.id.map);
-        map.setTileSource(TileSourceFactory.MAPNIK);
+        binding.map.setTileSource(TileSourceFactory.MAPNIK);
 
         // Set the default zoom and location
-        MapController mapController = (MapController) map.getController();
+        MapController mapController = (MapController) binding.map.getController();
         mapController.setZoom(9.5);
         GeoPoint startPoint = new GeoPoint(latitude, longitude);
         mapController.setCenter(startPoint);
 
-        Button backButton = findViewById(R.id.back_button);
-        backButton.setOnClickListener(v -> finish());
+        binding.backButton.setOnClickListener(v -> finish());
 
-        Button calculateDistanceButton = findViewById(R.id.calculate_location_button);
-        calculateDistanceButton.setOnClickListener(v -> {
+        binding.calculateLocationButton.setOnClickListener(v -> {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 calculateDistance();
             } else {
@@ -79,13 +74,11 @@ public class MapActivity extends AppCompatActivity {
     private void performLocationOperation() {
         FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            ProgressBar progressBar = findViewById(R.id.progress_bar);
-            TextView distanceText = findViewById(R.id.distance_text_view);
-            progressBar.setVisibility(View.VISIBLE);
-            distanceText.setVisibility(View.GONE);
+            binding.progressBar.setVisibility(View.VISIBLE);
+            binding.distanceTextView.setVisibility(View.GONE);
             fusedLocationClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, null)
                     .addOnSuccessListener(location -> {
-                        progressBar.setVisibility(View.GONE);
+                        binding.progressBar.setVisibility(View.GONE);
                         double latitude = getIntent().getDoubleExtra("latitude", 0);
                         double longitude = getIntent().getDoubleExtra("longitude", 0);
 
@@ -98,8 +91,8 @@ public class MapActivity extends AppCompatActivity {
                         userLocation.setLongitude(location.getLongitude());
 
                         float distance = userLocation.distanceTo(catLocation) / 1000; // Convert to kilometers
-                        distanceText.setVisibility(View.VISIBLE);
-                        distanceText.setText(String.format(Locale.getDefault(), "%.2f km", distance));
+                        binding.distanceTextView.setVisibility(View.VISIBLE);
+                        binding.distanceTextView.setText(String.format(Locale.getDefault(), "%.2f km", distance));
                     });
         }
     }

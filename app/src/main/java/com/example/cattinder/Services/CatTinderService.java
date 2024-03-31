@@ -25,7 +25,7 @@ import java.util.ArrayList;
 
 public class CatTinderService extends Service {
 
-    private int NOTIFICATION_ID = 999999;
+    private static final int NOTIFICATION_ID = 999999;
     private int randomNotificationMessage;
     private int currentCatIndex = 0;
 
@@ -109,6 +109,7 @@ public class CatTinderService extends Service {
 
                         LikedCat nextCat = getNextCat(likedCats);
 
+                        assert nextCat != null;
                         new ImageLoadTask(CatTinderService.this, nextCat.getImageUrl(), remoteViews, R.id.cat_widget_image).execute();
                         remoteViews.setOnClickPendingIntent(R.id.cat_widget_image, pendingIntent);
 

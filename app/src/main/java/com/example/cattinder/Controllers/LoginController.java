@@ -40,8 +40,10 @@ public class LoginController implements View.OnClickListener {
 
     @Override
     public void onClick(View button) {
-        getSystemService(activity, InputMethodManager.class)
-            .hideSoftInputFromWindow(button.getWindowToken(), 0);
+        InputMethodManager inputMethodManager = getSystemService(activity, InputMethodManager.class);
+        assert inputMethodManager != null;
+
+        inputMethodManager.hideSoftInputFromWindow(button.getWindowToken(), 0);
 
         if (button.getId() == R.id.login_button) {
             authViewModel.tryLogIn(

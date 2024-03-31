@@ -8,14 +8,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
-import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.example.cattinder.Activities.HistoryActivity;
@@ -63,51 +59,36 @@ public class DrawerFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         FragmentDrawerBinding binding = FragmentDrawerBinding.inflate(inflater, container, false);
 
         binding.drawerProfileName.setText(fullName);
 
-        binding.drawerUserProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                activity.startActivity(new Intent(activity, ProfileActivity.class));
-                activity.finish();
-            }
+        binding.drawerUserProfile.setOnClickListener(v -> {
+            activity.startActivity(new Intent(activity, ProfileActivity.class));
+            activity.finish();
         });
 
-        binding.drawerNavigateHome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                activity.startActivity(new Intent(activity, MainActivity.class));
-                activity.finish();
-            }
+        binding.drawerNavigateHome.setOnClickListener(v -> {
+            activity.startActivity(new Intent(activity, MainActivity.class));
+            activity.finish();
         });
 
-        binding.drawerNavigateProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                activity.startActivity(new Intent(activity, ProfileActivity.class));
-                activity.finish();
-            }
+        binding.drawerNavigateProfile.setOnClickListener(v -> {
+            activity.startActivity(new Intent(activity, ProfileActivity.class));
+            activity.finish();
         });
 
-        binding.drawerNavigateHistory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                activity.startActivity(new Intent(activity, HistoryActivity.class));
-                activity.finish();
-            }
+        binding.drawerNavigateHistory.setOnClickListener(v -> {
+            activity.startActivity(new Intent(activity, HistoryActivity.class));
+            activity.finish();
         });
 
-        binding.drawerNavigatePreferences.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                activity.startActivity(new Intent(activity, PreferencesActivity.class));
-                activity.finish();
-            }
+        binding.drawerNavigatePreferences.setOnClickListener(v -> {
+            activity.startActivity(new Intent(activity, PreferencesActivity.class));
+            activity.finish();
         });
 
         if (this.profilePicture != null) {

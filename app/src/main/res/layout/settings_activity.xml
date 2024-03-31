@@ -11,7 +11,9 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:src="@android:drawable/ic_menu_revert"
-        android:translationX="24px"
-        android:translationY="24px" />
+        android:translationX="24dp"
+        android:translationY="24dp"
+        android:contentDescription="@string/back"
+        android:focusable="true" />
 
 </FrameLayout>

@@ -21,19 +21,15 @@ import java.net.URL;
 public class ImageLoadTask extends AsyncTask<Void, Void, Bitmap> {
     private AppCompatActivity activity;
     private Context context;
-    private String url;
+    private final String url;
     private ImageView imageView;
     private RemoteViews remoteViews;
     private int imageViewId;
-    private int maxWidth;
-    private int maxHeight;
 
     public ImageLoadTask(AppCompatActivity activity, String url, ImageView imageView) {
         this.activity = activity;
         this.url = url;
         this.imageView = imageView;
-        this.maxWidth = 256;
-        this.maxHeight = 256;
     }
 
     // This constructor is used for loading images into widgets
@@ -42,8 +38,6 @@ public class ImageLoadTask extends AsyncTask<Void, Void, Bitmap> {
         this.url = url;
         this.remoteViews = remoteViews;
         this.imageViewId = imageViewId;
-        this.maxWidth = 512;
-        this.maxHeight = 512;
     }
 
     @Override
@@ -56,9 +50,9 @@ public class ImageLoadTask extends AsyncTask<Void, Void, Bitmap> {
             connection.connect();
             InputStream input = connection.getInputStream();
 
-            return resize(BitmapFactory.decodeStream(input), this.maxWidth, this.maxHeight);
+            return resize(BitmapFactory.decodeStream(input), 256, 256);
         } catch (Exception e) {
-            if (activity != null) {
+            if (activity != null && e.getMessage() != null) {
                 Snackbar.make(activity.findViewById(android.R.id.content), e.getMessage(), Snackbar.LENGTH_LONG).show();
             }
         }
@@ -80,10 +74,9 @@ public class ImageLoadTask extends AsyncTask<Void, Void, Bitmap> {
                 finalHeight = (int) ((float)maxWidth / ratioBitmap);
             }
             image = Bitmap.createScaledBitmap(image, finalWidth, finalHeight, true);
-            return image;
-        } else {
-            return image;
         }
+
+        return image;
     }
 
     @Override

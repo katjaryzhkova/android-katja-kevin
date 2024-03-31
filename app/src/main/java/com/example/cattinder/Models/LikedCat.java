@@ -8,7 +8,7 @@ public class LikedCat {
     public String name;
 
     public LikedCat() {
-        // Default constructor required for calls to DataSnapshot.getValue(LikedCat.class)
+        // Default constructor required for calls to snapshot.toObjects(LikedCat.class)
     }
 
     public LikedCat(String imageUrl, String name) {

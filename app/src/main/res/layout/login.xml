@@ -5,8 +5,6 @@
     android:layout_margin="24dp"
     android:orientation="vertical">
 
-    <!--TODO: The Cat images needs to be put here-->
-
     <EditText
         android:id="@+id/login_email_input_field"
         android:layout_width="match_parent"
@@ -17,7 +15,9 @@
         android:hint="@string/email_hint"
         android:paddingStart="15dp"
         android:paddingEnd="15dp"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:autofillHints="email"
+        android:inputType="textEmailAddress" />
 
     <EditText
         android:id="@+id/login_password_input_field"
@@ -30,13 +30,12 @@
         android:inputType="textPassword"
         android:paddingStart="15dp"
         android:paddingEnd="15dp"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:autofillHints="password" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="16dp"
         android:gravity="center_horizontal"

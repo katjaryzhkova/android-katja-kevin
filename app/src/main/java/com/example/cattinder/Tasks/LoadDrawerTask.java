@@ -1,11 +1,9 @@
 package com.example.cattinder.Tasks;
 
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.preference.PreferenceManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
@@ -19,12 +17,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class LoadDrawerTask extends AsyncTask<Void, Void, Bitmap> {
-    private AppCompatActivity activity;
-    private String url;
-    private FragmentTransaction transaction;
-    private AuthViewModel authViewModel;
-    private boolean darkMode;
-    private SharedPreferences preferences;
+    private final AppCompatActivity activity;
+    private final String url;
+    private final FragmentTransaction transaction;
+    private final AuthViewModel authViewModel;
 
     public LoadDrawerTask(AppCompatActivity activity, FragmentTransaction transaction, AuthViewModel authViewModel) {
         Uri uri = authViewModel.getPhoto();
@@ -36,9 +32,6 @@ public class LoadDrawerTask extends AsyncTask<Void, Void, Bitmap> {
         this.activity = activity;
         this.transaction = transaction;
         this.authViewModel = authViewModel;
-
-        this.preferences = PreferenceManager.getDefaultSharedPreferences(activity);
-        this.darkMode = this.preferences.getBoolean("dark_mode", false);
     }
 
     @Override

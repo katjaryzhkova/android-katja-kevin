@@ -11,7 +11,8 @@
         android:id="@+id/scrollView"
         android:layout_width="250dp"
         android:layout_height="match_parent"
-        android:background="#FFFFFF">
+        android:background="#FFFFFF"
+        tools:ignore="UselessParent">
 
         <LinearLayout
             android:id="@+id/drawerLinearLayout2"
@@ -53,7 +54,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="16dp"
-                        android:text="Unknown User"
+                        android:text="@string/unknown_user"
                         android:textColor="#FFFFFF" />
                 </LinearLayout>
 
@@ -80,7 +81,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="8dp"
-                        android:text="Home" />
+                        android:text="@string/home" />
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
@@ -106,7 +107,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="8dp"
-                        android:text="Profile" />
+                        android:text="@string/profile" />
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
@@ -132,7 +133,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="8dp"
-                        android:text="History" />
+                        android:text="@string/history" />
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
@@ -158,7 +159,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="8dp"
-                        android:text="Settings" />
+                        android:text="@string/settings" />
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
