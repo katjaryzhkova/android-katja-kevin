@@ -50,7 +50,7 @@ public class LoadDrawerTask extends AsyncTask<Void, Void, Bitmap> {
             connection.setDoInput(true);
             connection.connect();
             InputStream input = connection.getInputStream();
-            return BitmapFactory.decodeStream(input);
+            return ImageLoadTask.resize(BitmapFactory.decodeStream(input), 128, 128);
         } catch (Exception ignored) { }
         return null;
     }

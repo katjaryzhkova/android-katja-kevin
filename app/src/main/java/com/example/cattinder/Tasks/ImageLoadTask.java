@@ -25,11 +25,15 @@ public class ImageLoadTask extends AsyncTask<Void, Void, Bitmap> {
     private ImageView imageView;
     private RemoteViews remoteViews;
     private int imageViewId;
+    private int maxWidth;
+    private int maxHeight;
 
     public ImageLoadTask(AppCompatActivity activity, String url, ImageView imageView) {
         this.activity = activity;
         this.url = url;
         this.imageView = imageView;
+        this.maxWidth = 256;
+        this.maxHeight = 256;
     }
 
     // This constructor is used for loading images into widgets
@@ -38,6 +42,8 @@ public class ImageLoadTask extends AsyncTask<Void, Void, Bitmap> {
         this.url = url;
         this.remoteViews = remoteViews;
         this.imageViewId = imageViewId;
+        this.maxWidth = 512;
+        this.maxHeight = 512;
     }
 
     @Override
@@ -49,13 +55,35 @@ public class ImageLoadTask extends AsyncTask<Void, Void, Bitmap> {
             connection.setDoInput(true);
             connection.connect();
             InputStream input = connection.getInputStream();
-            return BitmapFactory.decodeStream(input);
+
+            return resize(BitmapFactory.decodeStream(input), this.maxWidth, this.maxHeight);
         } catch (Exception e) {
             if (activity != null) {
                 Snackbar.make(activity.findViewById(android.R.id.content), e.getMessage(), Snackbar.LENGTH_LONG).show();
             }
         }
         return null;
+    }
+
+    public static Bitmap resize(Bitmap image, int maxWidth, int maxHeight) {
+        if (maxHeight > 0 && maxWidth > 0) {
+            int width = image.getWidth();
+            int height = image.getHeight();
+            float ratioBitmap = (float) width / (float) height;
+            float ratioMax = (float) maxWidth / (float) maxHeight;
+
+            int finalWidth = maxWidth;
+            int finalHeight = maxHeight;
+            if (ratioMax > ratioBitmap) {
+                finalWidth = (int) ((float)maxHeight * ratioBitmap);
+            } else {
+                finalHeight = (int) ((float)maxWidth / ratioBitmap);
+            }
+            image = Bitmap.createScaledBitmap(image, finalWidth, finalHeight, true);
+            return image;
+        } else {
+            return image;
+        }
     }
 
     @Override
