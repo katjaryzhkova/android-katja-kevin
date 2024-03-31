@@ -109,13 +109,14 @@ public class CatTinderService extends Service {
 
                         LikedCat nextCat = getNextCat(likedCats);
 
-                        assert nextCat != null;
-                        new ImageLoadTask(CatTinderService.this, nextCat.getImageUrl(), remoteViews, R.id.cat_widget_image).execute();
-                        remoteViews.setOnClickPendingIntent(R.id.cat_widget_image, pendingIntent);
+                        if(nextCat != null) {
+                            new ImageLoadTask(CatTinderService.this, nextCat.getImageUrl(), remoteViews, R.id.cat_widget_image).execute();
+                            remoteViews.setOnClickPendingIntent(R.id.cat_widget_image, pendingIntent);
 
-                        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this.getApplicationContext());
-                        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this.getApplicationContext(), CatTinderWidget.class));
-                        appWidgetManager.updateAppWidget(appWidgetIds, remoteViews);
+                            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this.getApplicationContext());
+                            int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this.getApplicationContext(), CatTinderWidget.class));
+                            appWidgetManager.updateAppWidget(appWidgetIds, remoteViews);
+                        }
                     }
                 });
 
