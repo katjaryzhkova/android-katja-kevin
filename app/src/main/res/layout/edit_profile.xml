@@ -15,24 +15,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="true"
-            android:rotation="180"
-            app:srcCompat="@android:drawable/ic_media_play"
+            android:contentDescription="@string/back"
             android:focusable="true"
-            android:contentDescription="@string/back" />
+            android:rotation="180"
+            app:srcCompat="@android:drawable/ic_media_play" />
 
         <EditText
             android:id="@+id/update_name_input_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="4dp"
             android:layout_marginEnd="20dp"
+            android:autofillHints="name"
             android:hint="@string/name_hint"
+            android:inputType="textPersonName"
             android:paddingStart="15dp"
             android:paddingEnd="15dp"
-            android:textSize="16sp"
-            android:inputType="textPersonName"
-            android:autofillHints="name" />
+            android:textSize="16sp" />
 
         <EditText
             android:id="@+id/update_current_password_input_field"
@@ -64,8 +64,9 @@
 
         <Button
             android:id="@+id/update_button"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:layout_marginTop="40dp"
             android:text="@string/update_button" />
 

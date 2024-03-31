@@ -15,12 +15,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
-            android:src="@android:drawable/ic_menu_more"
-            android:translationX="24dp"
-            android:translationY="24dp"
-            android:focusable="true"
             android:contentDescription="@string/open_navigation_drawer"
-            tools:ignore="MissingConstraints" />
+            android:focusable="true"
+            android:src="@android:drawable/ic_menu_more"
+            android:translationX="6dp"
+            android:translationY="6dp"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteX="24dp"
+            tools:layout_editor_absoluteY="24dp" />
 
         <LinearLayout
             android:id="@+id/drawerLinearLayoutProfile"
@@ -109,11 +111,11 @@
                                     android:layout_width="32dp"
                                     android:layout_height="32dp"
                                     android:background="#FF5E5E"
+                                    android:contentDescription="@string/sign_out"
                                     android:src="@android:drawable/ic_menu_close_clear_cancel"
                                     android:tintMode="screen"
                                     app:srcCompat="@android:drawable/ic_menu_close_clear_cancel"
-                                    app:tint="#FF5E5E"
-                                    android:contentDescription="@string/sign_out" />
+                                    app:tint="#FF5E5E" />
                             </androidx.cardview.widget.CardView>
 
                             <TextView
@@ -149,11 +151,11 @@
                                     android:layout_width="32dp"
                                     android:layout_height="32dp"
                                     android:background="#FF5E5E"
+                                    android:contentDescription="@string/delete_account"
                                     android:src="@android:drawable/ic_menu_delete"
                                     android:tintMode="screen"
                                     app:srcCompat="@android:drawable/ic_menu_delete"
-                                    app:tint="#FF5E5E"
-                                    android:contentDescription="@string/delete_account" />
+                                    app:tint="#FF5E5E" />
                             </androidx.cardview.widget.CardView>
 
                             <TextView
