@@ -2,6 +2,7 @@ package com.example.cattinder.ViewModels;
 
 import android.app.Activity;
 import android.content.Context;
+
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.ImageView;
@@ -22,6 +23,8 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.cattinder.R;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,6 +33,9 @@ import java.net.URL;
 
 public class CardViewModel {
     private final Context context;
+    private LatLng catLocation;
+    private String imageUrl = "";
+    private String name = "";
 
     public CardViewModel(Context context) {
         this.context = context;
@@ -41,19 +47,23 @@ public class CardViewModel {
             progressBar.setVisibility(View.VISIBLE);
 
             loadCatImage(new URL("https://api.thecatapi.com/v1/images/search"), progressBar);
-            loadUserData(new URL("https://randomuser.me/api/"), progressBar);
+            loadUserData(new URL("https://randomuser.me/api/"));
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
     }
 
     private void loadCatImage(URL url, ProgressBar progressBar) {
-        ImageView imageView = ((Activity) context).findViewById(R.id.card_image);
+        Activity activity = (Activity) context;
+        if (activity.isDestroyed()) {
+            return;
+        }
 
+        ImageView imageView = activity.findViewById(R.id.card_image);
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url.toString(), null, response -> {
             try {
                 JSONObject jsonObject = response.getJSONObject(0);
-                String imageUrl = jsonObject.getString("url");
+                imageUrl = jsonObject.getString("url");
 
                 Glide.with(context).load(imageUrl).listener(new RequestListener<Drawable>() {
                     @Override
@@ -78,7 +88,7 @@ public class CardViewModel {
         requestQueue.add(jsonArrayRequest);
     }
 
-    private void loadUserData(URL url, ProgressBar progressBar) {
+    private void loadUserData(URL url) {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url.toString(), null, response -> {
             try {
                 JSONObject results = response.getJSONArray("results").getJSONObject(0); // Only returns one user, so we can just get the first one
@@ -87,12 +97,16 @@ public class CardViewModel {
 
                 String firstName = name.getString("first");
                 String lastName = name.getString("last");
-                String city = location.getString("city");
+
+                this.name = firstName + " " + lastName;
+
+                double latitude = location.getJSONObject("coordinates").getDouble("latitude");
+                double longitude = location.getJSONObject("coordinates").getDouble("longitude");
+
+                catLocation = new LatLng(latitude, longitude);
 
                 TextView textView = ((Activity) context).findViewById(R.id.cat_info);
-                textView.setText(firstName + " " + lastName + " from " + city);
-
-                progressBar.setVisibility(View.GONE);
+                textView.setText(this.name);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -100,5 +114,15 @@ public class CardViewModel {
 
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         requestQueue.add(jsonObjectRequest);
+    }
+
+    public LatLng getCatLocation() {
+        return catLocation;
+    }
+    public String getImageUrl() {
+        return imageUrl;
+    }
+    public String getName() {
+        return name;
     }
 }

@@ -1,12 +1,25 @@
 package com.example.cattinder.Controllers;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
+import android.content.Intent;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 
+import androidx.drawerlayout.widget.DrawerLayout;
+
+import com.example.cattinder.MainActivity;
+import com.example.cattinder.MapActivity;
+import com.example.cattinder.PreferencesActivity;
 import com.example.cattinder.R;
+import com.example.cattinder.ViewModels.AuthViewModel;
 import com.example.cattinder.ViewModels.CardViewModel;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import kotlin.NotImplementedError;
 
@@ -15,13 +28,31 @@ public class MainController implements View.OnClickListener {
 
     private final CardViewModel cardViewModel;
     private final GestureDetector gestureDetector;
+    private final AuthViewModel auth;
 
-    public MainController(CardViewModel cardViewModel, ImageButton dislikeButton, ImageButton likeButton, ImageButton mapButton, View cardView) {
+    public MainController(
+        CardViewModel cardViewModel,
+        ImageButton dislikeButton,
+        ImageButton likeButton,
+        ImageButton mapButton,
+        View cardView,
+        FloatingActionButton openDrawerButton,
+        DrawerLayout drawerLayout,
+        AuthViewModel auth
+    ) {
         this.cardViewModel = cardViewModel;
+        this.auth = auth;
 
         dislikeButton.setOnClickListener(this);
         likeButton.setOnClickListener(this);
         mapButton.setOnClickListener(this);
+
+        openDrawerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.open();
+            }
+        });
 
         gestureDetector = new GestureDetector(cardView.getContext(), new GestureDetector.SimpleOnGestureListener() {
             @Override
@@ -51,9 +82,17 @@ public class MainController implements View.OnClickListener {
     @Override
     public void onClick(View button) {
         if (button.getId() == R.id.dislike_button || button.getId() == R.id.like_button) {
+            if (button.getId() == R.id.like_button) {
+                auth.addToLikeHistory(cardViewModel.getImageUrl(), cardViewModel.getName());
+            }
+
             cardViewModel.newCat();
         } else if (button.getId() == R.id.map_button) {
-            throw new NotImplementedError("Map feature not implemented yet");
+            LatLng catLocation = cardViewModel.getCatLocation();
+            Intent intent = new Intent(button.getContext(), MapActivity.class);
+            intent.putExtra("latitude", catLocation.latitude);
+            intent.putExtra("longitude", catLocation.longitude);
+            button.getContext().startActivity(intent);
         }
     }
 }

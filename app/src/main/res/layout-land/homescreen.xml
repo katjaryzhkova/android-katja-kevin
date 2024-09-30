@@ -24,11 +24,11 @@
             android:id="@+id/card_stack"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/button_layout"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
+            android:layout_toLeftOf="@id/button_layout"
             android:background="@drawable/rounded_bg">
 
             <ImageView
@@ -60,19 +60,19 @@
 
         <LinearLayout
             android:id="@+id/button_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="false"
             android:gravity="center"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:padding="16dp">
 
             <ImageButton
-                android:id="@+id/dislike_button"
+                android:id="@+id/like_button"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:src="@drawable/dislike_button" />
+                android:src="@drawable/like_button" />
 
             <ImageButton
                 android:id="@+id/map_button"
@@ -81,10 +81,10 @@
                 android:src="@drawable/map_button" />
 
             <ImageButton
-                android:id="@+id/like_button"
+                android:id="@+id/dislike_button"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:src="@drawable/like_button" />
+                android:src="@drawable/dislike_button" />
 
         </LinearLayout>
     </RelativeLayout>
@@ -94,9 +94,9 @@
         android:layout_width="250dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:clickable="true"
         android:divider="@android:color/transparent"
-        android:dividerHeight="0dp">
+        android:dividerHeight="0dp"
+        android:clickable="true">
 
         <ImageView
             android:id="@+id/imageView_bg"
@@ -150,8 +150,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_marginStart="16dp"
-                            android:text="Unknown User"
-                            android:textColor="#FFFFFF" />
+                            android:text="Unknown User" />
                     </LinearLayout>
 
                 </RelativeLayout>
@@ -204,58 +203,6 @@
                             android:layout_height="wrap_content"
                             android:padding="8dp"
                             android:text="Profile" />
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/home_navigate_history"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginBottom="4dp"
-                    app:cardBackgroundColor="#ffffff"
-                    app:cardCornerRadius="8dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/home_link_nav_history"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:padding="8dp"
-                            android:text="History" />
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/home_navigate_preferences"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginBottom="4dp"
-                    app:cardBackgroundColor="#ffffff"
-                    app:cardCornerRadius="8dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/home_link_nav_preferences"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:padding="8dp"
-                            android:text="Settings" />
                     </LinearLayout>
 
                 </androidx.cardview.widget.CardView>

@@ -4,7 +4,17 @@
     <string name="login_button">Login</string>
     <string name="password_hint">Password</string>
     <string name="email_hint">Email</string>
-    <string name="name_hint">Username</string>
+    <string name="name_hint">Full name</string>
     <string name="confirm_password_hint">Confirm Password</string>
     <string name="already_have_account">Already have an account?</string>
+    <string name="logout_button">Log out</string>
+    <string name="back">Back</string>
+    <string name="calculate_distance">calculate distance</string>
+    <string name="location_error">error</string>
+    <string name="update_button">Update profile</string>
+    <string name="current_password_hint">Current Password</string>
+    <string name="new_password_hint">New Password</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="app_widget_description">This is an app widget description</string>
 </resources>
